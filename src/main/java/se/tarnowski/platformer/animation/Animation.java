@@ -11,6 +11,7 @@ import se.tarnowski.platformer.tmx.TmxTile;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.InputStreamReader;
 
 public class Animation extends JFrame {
 
@@ -22,7 +23,7 @@ public class Animation extends JFrame {
 
     public Animation() {
 
-        SimpleTmxLoader tmxLoader = new SimpleTmxLoader(new File("/Users/alexander/Desktop/mario.tmx"));
+        SimpleTmxLoader tmxLoader = new SimpleTmxLoader(new InputStreamReader(getClass().getResourceAsStream("/levels/mario.tmx")));
         tmxLoader.getTiles().stream().forEach(t ->
                 SpriteCache.addImage(t.getId(), t.getImage().replaceAll("^.*resources(.*)", "$1")));
 
