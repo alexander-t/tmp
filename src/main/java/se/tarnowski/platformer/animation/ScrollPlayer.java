@@ -2,15 +2,18 @@ package se.tarnowski.platformer.animation;
 
 import se.tarnowski.platformer.animation.view.ScrollingViewPort;
 import se.tarnowski.platformer.engine.entity.Entity;
+import se.tarnowski.platformer.mario.entity.BlockBase;
 
 import java.awt.*;
 
 public class ScrollPlayer extends Entity {
 
     private ScrollingViewPort viewPort;
+    private static final int WIDTH = 48;
+    private static final int HEIGHT = 48;
 
     public ScrollPlayer() {
-        super(0, 63);
+        super(10 * BlockBase.BLOCK_SIZE, 3 * BlockBase.BLOCK_SIZE);
     }
 
     @Override
@@ -25,14 +28,21 @@ public class ScrollPlayer extends Entity {
 
     @Override
     public void update() {
+
+        // Limit movement to level
         if (x < 0) {
             x = 0;
+        } else if (x > 24 * WIDTH - viewPort.getWidth() / 2) {
+            x = 24 * WIDTH - viewPort.getWidth() / 2;
         }
 
         if (y < 0) {
             y = 0;
+        } else if (y > 16 * HEIGHT - viewPort.getHeight() / 2) {
+            y = 16 * HEIGHT - viewPort.getHeight() / 2;
         }
 
+        // Move camera
         if (x >= viewPort.getWidth() / 2) {
             viewPort.setCamX((int) x - viewPort.getWidth() / 2);
         }

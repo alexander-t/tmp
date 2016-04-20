@@ -1,7 +1,7 @@
 package se.tarnowski.platformer.tmx
 
 class TmxTile {
-    String id
+    int id
     String image
-    def properties = [:]
+    Map<Integer, String> properties = [:]
 }

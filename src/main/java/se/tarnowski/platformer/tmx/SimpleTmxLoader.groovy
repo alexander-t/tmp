@@ -12,7 +12,7 @@ class SimpleTmxLoader {
     private int[][] mapData;
     private int mapWidth;
     private int mapHeight;
-    private tiles = []
+    private tiles = [:]
 
     SimpleTmxLoader(Reader reader) {
 
@@ -26,15 +26,18 @@ class SimpleTmxLoader {
         }
         def firstGid = Integer.valueOf(mapNode.tileset[0].@firstgid.text())
 
-        tiles = mapNode.tileset.tile.collect { t ->
-            new TmxTile(id: t.@id.text(), image: t.image.@source.text(),
-                    properties: t?.properties?.property.collectEntries { p -> [p.@name.text(), p.@value.text()] })
+        tiles = mapNode.tileset.tile.collectEntries { t ->
+            [firstGid + Integer.valueOf(t.@id.text()),
+             new TmxTile(
+                     id: Integer.valueOf(t.@id.text()),
+                     image: t.image.@source.text(),
+                     properties: t?.properties?.property.collectEntries { p -> [p.@name.text(), p.@value.text()] })]
         }
 
         def tileIds = mapNode.layer.data.text().split(",")
         for (int y = 0; y < mapHeight; y++) {
             for (int x = 0; x < mapWidth; x++) {
-                mapData[y][x] = Integer.valueOf(tileIds[y * mapWidth + x].trim()) - firstGid
+                mapData[y][x] = Integer.valueOf(tileIds[y * mapWidth + x].trim())
             }
         }
     }
@@ -51,7 +54,7 @@ class SimpleTmxLoader {
         mapWidth;
     }
 
-    List<TmxTile> getTiles() {
+    Map<Integer, TmxTile> getTiles() {
         tiles
     }
 }
