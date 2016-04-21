@@ -6,12 +6,9 @@ import se.tarnowski.platformer.mario.entity.BlockBase;
 import se.tarnowski.platformer.mario.entity.Goomba;
 import se.tarnowski.platformer.mario.entity.Player;
 import se.tarnowski.platformer.mario.state.LifeState;
-import se.tarnowski.platformer.mario.view.swing.JPanelViewPort;
+import se.tarnowski.platformer.mario.view.swing.SwingViewPort;
 
-import javax.swing.*;
-import java.util.List;
-
-public class Game extends JFrame {
+public class Game {
 
     public static final int MS_PER_FRAME = 16;
 
@@ -50,14 +47,8 @@ public class Game extends JFrame {
         gameContext.addEnemy(new Goomba(300, 511, gameContext));
         inputHandler = new KeyAdapterInputHandler();
 
-        final JPanelViewPort viewPort = new JPanelViewPort(gameContext);
-
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setUndecorated(true);
-        addKeyListener(inputHandler);
-        add(viewPort);
-        pack();
-        setVisible(true);
+        final SwingViewPort viewPort = new SwingViewPort(gameContext);
+        viewPort.addKeyListener(inputHandler);
 
         new Thread(() -> {
             while (true) {
