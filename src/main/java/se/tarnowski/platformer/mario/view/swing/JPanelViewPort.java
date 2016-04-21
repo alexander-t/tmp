@@ -2,6 +2,7 @@ package se.tarnowski.platformer.mario.view.swing;
 
 import se.tarnowski.platformer.engine.entity.Entity;
 import se.tarnowski.platformer.engine.sprite.swing.SpriteCache;
+import se.tarnowski.platformer.engine.view.ViewPort;
 import se.tarnowski.platformer.mario.GameContext;
 import se.tarnowski.platformer.mario.entity.BlockBase;
 import se.tarnowski.platformer.mario.entity.Player;
@@ -9,7 +10,7 @@ import se.tarnowski.platformer.mario.entity.Player;
 import javax.swing.*;
 import java.awt.*;
 
-public class JPanelViewPort extends JPanel {
+public class JPanelViewPort extends JPanel implements ViewPort {
 
     private int camX = 0;
     private int camY = 0;

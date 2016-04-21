@@ -2,10 +2,10 @@ package se.tarnowski.platformer.mario;
 
 import se.tarnowski.platformer.engine.VerticalDirection;
 import se.tarnowski.platformer.engine.entity.Entity;
+import se.tarnowski.platformer.engine.view.ViewPort;
 import se.tarnowski.platformer.mario.entity.BlockBase;
 import se.tarnowski.platformer.mario.entity.Goomba;
 import se.tarnowski.platformer.mario.entity.Player;
-import se.tarnowski.platformer.mario.view.swing.JPanelViewPort;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class GameContext {
 
-    private JPanelViewPort viewPort;
+    private ViewPort viewPort;
     public Player player;
     private Level level;
     public List<Entity> enemies = new ArrayList<>();
@@ -63,11 +63,11 @@ public class GameContext {
         return viewPort.getHeight();
     }
 
-    public JPanelViewPort getViewPort() {
+    public ViewPort getViewPort() {
         return viewPort;
     }
 
-    public void setViewPort(JPanelViewPort viewPort) {
+    public void setViewPort(ViewPort viewPort) {
         this.viewPort = viewPort;
     }
 
