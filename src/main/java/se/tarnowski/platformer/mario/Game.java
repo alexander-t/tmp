@@ -16,14 +16,14 @@ public class Game extends JFrame {
     public static final int MS_PER_FRAME = 16;
 
     private final Player player;
-    private final List<BlockBase> blocks;
+    private final Level level;
     private final GameContext gameContext;
 
     private final KeyAdapterInputHandler inputHandler;
     private boolean allowJump = true;
 
     private static final int PLAYER_START_X = BlockBase.BLOCK_SIZE;
-    private static final int PLAYER_START_Y = 768 - BlockBase.BLOCK_SIZE - 23;
+    private static final int PLAYER_START_Y = BlockBase.BLOCK_SIZE * 10;
 
     public Game() {
 
@@ -42,14 +42,12 @@ public class Game extends JFrame {
         SpriteCache.addFlipped("mario walk left4", "mario walk right4");
         SpriteCache.addFlipped("mario jump left", "mario jump right");
         SpriteCache.add("mario dying", "heroes", 411, 7, 16, 24);
-        SpriteCache.addImage("block immobile", "/block2_24x24.png");
-        SpriteCache.addImage("block standard", "/block24x24.png");
 
         player = new Player(PLAYER_START_X, PLAYER_START_Y);
-        blocks = LevelBuilder.buildLevel();
-        gameContext = new GameContext(player, blocks);
-        gameContext.addEnemy(new Goomba(680, 768 - 24 - 16, gameContext));
-        gameContext.addEnemy(new Goomba(300, 768 - 24 - 16, gameContext));
+        level = LevelBuilder.buildLevel();
+        gameContext = new GameContext(player, level);
+        gameContext.addEnemy(new Goomba(680, 511, gameContext));
+        gameContext.addEnemy(new Goomba(300, 511, gameContext));
         inputHandler = new KeyAdapterInputHandler();
 
         final JPanelViewPort viewPort = new JPanelViewPort(gameContext);

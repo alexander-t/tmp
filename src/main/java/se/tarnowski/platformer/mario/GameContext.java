@@ -1,10 +1,11 @@
 package se.tarnowski.platformer.mario;
 
 import se.tarnowski.platformer.engine.VerticalDirection;
-import se.tarnowski.platformer.mario.entity.BlockBase;
 import se.tarnowski.platformer.engine.entity.Entity;
+import se.tarnowski.platformer.mario.entity.BlockBase;
 import se.tarnowski.platformer.mario.entity.Goomba;
 import se.tarnowski.platformer.mario.entity.Player;
+import se.tarnowski.platformer.mario.view.swing.JPanelViewPort;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -12,18 +13,19 @@ import java.util.List;
 
 public class GameContext {
 
+    private JPanelViewPort viewPort;
     public Player player;
-    public List<BlockBase> blocks;
+    private Level level;
     public List<Entity> enemies = new ArrayList<>();
 
-    public GameContext(Player player, List<BlockBase> blocks) {
+    public GameContext(Player player, Level level) {
         this.player = player;
-        this.blocks = blocks;
+        this.level = level;
         player.setGameContext(this);
     }
 
     public boolean detectCollisionsWithWorld(Rectangle rectangle, VerticalDirection verticalDirection) {
-        for (BlockBase block : blocks) {
+        for (BlockBase block : level.getBlocks()) {
             if (rectangle.intersects(block.getBoundingRectangle())) {
                 if (verticalDirection == VerticalDirection.UP) {
                     block.bump();
@@ -48,16 +50,28 @@ public class GameContext {
     }
 
     public void update() {
-        for (BlockBase block : blocks) {
-            block.update();
-        }
-        for (Entity enemy : enemies) {
-            enemy.update();
-        }
+        level.getBlocks().stream().forEach(b -> b.update());
+        enemies.stream().forEach(e -> e.update());
         player.update();
     }
 
-    public int getScreenHeight() {
-        return 768;
+    public int getViewPortWidth() {
+        return viewPort.getWidth();
+    }
+
+    public int getViewPortHeight() {
+        return viewPort.getHeight();
+    }
+
+    public JPanelViewPort getViewPort() {
+        return viewPort;
+    }
+
+    public void setViewPort(JPanelViewPort viewPort) {
+        this.viewPort = viewPort;
+    }
+
+    public Level getLevel() {
+        return level;
     }
 }

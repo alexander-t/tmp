@@ -1,10 +1,10 @@
 package se.tarnowski.platformer.mario.entity;
 
-import se.tarnowski.platformer.mario.GameContext;
-import se.tarnowski.platformer.engine.entity.Entity;
 import se.tarnowski.platformer.engine.HorizontalDirection;
-import se.tarnowski.platformer.mario.state.LifeState;
 import se.tarnowski.platformer.engine.VerticalDirection;
+import se.tarnowski.platformer.engine.entity.Entity;
+import se.tarnowski.platformer.mario.GameContext;
+import se.tarnowski.platformer.mario.state.LifeState;
 
 import java.awt.*;
 
@@ -130,6 +130,7 @@ public class Player extends Entity {
         this.y = y;
         frameIndex = 0;
         lifeState = LifeState.ALIVE;
+        gameContext.getViewPort().resetCamera();
     }
 
     @Override
@@ -156,12 +157,39 @@ public class Player extends Entity {
     @Override
     public void update() {
 
+        final int viewPortWidth = gameContext.getViewPortWidth();
+        final int viewPortHeight = gameContext.getViewPortHeight();
+
+        // Limit movement to level
+        if (x < 0) {
+            x = 0;
+        } else if (x > gameContext.getLevel().widthInPixels() - SPRITE_WIDTH) {
+            x = gameContext.getLevel().widthInPixels() - SPRITE_WIDTH;
+        }
+
+        if (y < 0) {
+            y = 0;
+        }
+
+        // Move camera
+        if (x >= viewPortWidth / 2) {
+            if (x < gameContext.getLevel().widthInPixels() - viewPortWidth / 2) {
+                gameContext.getViewPort().setCamX((int) x - gameContext.getViewPort().getWidth() / 2);
+            }
+        }
+
+        if (y >= viewPortHeight / 2) {
+            if (y < gameContext.getLevel().heightInPixels() - viewPortHeight / 2) {
+                gameContext.getViewPort().setCamY((int) y - gameContext.getViewPort().getHeight() / 2);
+            }
+        }
+
         if (lifeState == lifeState.DYING) {
             currentImageId = IMAGE_ID_DYING;
             if (animationTicks++ < 5) {
                 y -= 3;
             } else {
-                if (y < gameContext.getScreenHeight()) {
+                if (y < viewPortHeight) {
                     y += 1.5;
                 } else {
                     lifeState = lifeState.DEAD;
@@ -177,7 +205,7 @@ public class Player extends Entity {
             } else {
                 verticalDirection = VerticalDirection.DOWN;
                 y += 4;
-                if (y >= 768) {
+                if (y >= gameContext.getLevel().heightInPixels()) {
                     lifeState = LifeState.DEAD;
                     return;
                 }
@@ -185,7 +213,7 @@ public class Player extends Entity {
         }
 
         if (verticalDirection == VerticalDirection.DOWN) {
-            currentImageId = horizontalDirection == HorizontalDirection.RIGHT ? IMAGE_ID_JUMP_RIGHT : IMAGE_ID_JUMP_RIGHT;
+            currentImageId = horizontalDirection == HorizontalDirection.RIGHT ? IMAGE_ID_JUMP_RIGHT : IMAGE_ID_JUMP_LEFT;
         } else if (verticalDirection == VerticalDirection.UP) {
             if (animationTicks++ < FRAMES_PER_JUMP) {
                 Rectangle rectangle = getBoundingRectangleYExpandedBy(-4);
