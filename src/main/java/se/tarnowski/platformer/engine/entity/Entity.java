@@ -16,11 +16,19 @@ public abstract class Entity {
         this.y = y;
     }
 
-    public int getX() {
-        return (int) x;
+    public float getX() {
+        return x;
     }
 
-    public int getY() {
-        return (int) y;
+    public float getY() {
+        return y;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
     }
 }

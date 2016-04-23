@@ -43,8 +43,8 @@ public class Game {
         player = new Player(PLAYER_START_X, PLAYER_START_Y);
         level = LevelBuilder.buildLevel();
         gameContext = new GameContext(player, level);
-        gameContext.addEnemy(new Goomba(680, 511, gameContext));
-        gameContext.addEnemy(new Goomba(300, 511, gameContext));
+        //gameContext.addEnemy(new Goomba(680, 511, gameContext));
+        gameContext.addEnemy(new Goomba(350, 511, gameContext));
         inputHandler = new KeyAdapterInputHandler();
 
         final SwingViewPort viewPort = new SwingViewPort(gameContext);

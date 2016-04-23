@@ -46,13 +46,13 @@ public class ScrollingViewPort extends JPanel {
             for (int x = 0; x < level.length; x++) {
                 BlockBase block = level[y][x];
                 if (block != null && isInViewPort(block)) {
-                    g.drawImage(SpriteCache.get(block.getCurrentImageId()), block.getX(), block.getY(), null);
+                    g.drawImage(SpriteCache.get(block.getCurrentImageId()), (int) block.getX(), (int) block.getY(), null);
                 }
             }
 
         }
 
-        g.drawImage(SpriteCache.get("player"), player.getX() - 24, player.getY() - 24, null);
+        g.drawImage(SpriteCache.get("player"), (int) player.getX() - 24, (int) player.getY() - 24, null);
         g.setColor(Color.white);
         g.drawString(String.format("x=%d, y=%d    camx=%d, camy=%d", player.getX(), player.getY(), camX, camY), camX + 1, camY + 10);
     }
