@@ -3,11 +3,19 @@ package se.tarnowski.platformer.engine.entity;
 import se.tarnowski.platformer.engine.HorizontalDirection;
 import se.tarnowski.platformer.engine.VerticalDirection;
 
+import java.awt.*;
+
 public abstract class MovingEntity extends Entity {
     protected HorizontalDirection horizontalDirection;
     protected VerticalDirection verticalDirection;
     protected float velocity;
     protected float verticalVelocity;
+
+    ///////////////////////////////////////////
+    protected boolean isJumping;
+    public final int framesPerJump = 16;
+    public int frameInJump = 0;
+    /////////////////////////////////////////////
 
     public MovingEntity(int x, int y, float initialVelocity, HorizontalDirection initialHorizontalDirection, VerticalDirection initialVerticalDirection) {
         super(x, y);
@@ -15,6 +23,8 @@ public abstract class MovingEntity extends Entity {
         horizontalDirection = initialHorizontalDirection;
         verticalDirection = initialVerticalDirection;
     }
+
+    public abstract Point[][] getCollisionPoints();
 
     public HorizontalDirection getHorizontalDirection() {
         return horizontalDirection;
@@ -42,5 +52,20 @@ public abstract class MovingEntity extends Entity {
 
     public float getVerticalVelocity() {
         return verticalVelocity;
+    }
+
+    public boolean isJumping() {
+        return isJumping;
+    }
+
+    public void startJump() {
+        if (!isJumping && verticalVelocity == 0) {
+            isJumping = true;
+            frameInJump = 0;
+        }
+    }
+
+    public void endJump() {
+        isJumping = false;
     }
 }

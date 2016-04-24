@@ -2,9 +2,9 @@ package se.tarnowski.platformer.engine.component;
 
 import se.tarnowski.platformer.engine.Collision;
 import se.tarnowski.platformer.engine.HorizontalDirection;
+import se.tarnowski.platformer.engine.entity.MovingEntity;
 import se.tarnowski.platformer.mario.Level;
 import se.tarnowski.platformer.mario.entity.BlockBase;
-import se.tarnowski.platformer.mario.entity.Goomba;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -15,40 +15,70 @@ public class PhysicsComponent {
 
     public static final float BASE_VERTICAL_VELOCITY = 1.0f;
 
+    public void update(MovingEntity entity, Level level) {
 
-    public void update(Goomba goomba, Level level) {
-        goomba.setX(goomba.getX() + goomba.getVelocity());
-        goomba.setY(goomba.getY() + goomba.getVerticalVelocity());
-
-        Set<Collision> collisions = detectCollisionsWithWorld(goomba, level);
-
-        if (collisions.contains(Collision.DOWN)) {
-            goomba.setY(goomba.getY() - goomba.getVerticalVelocity());
-            goomba.setVerticalVelocity(0);
-        } else {
-            if (goomba.getVerticalVelocity() == 0) {
-                goomba.setVerticalVelocity(BASE_VERTICAL_VELOCITY);
-            } else {
-                goomba.setVerticalVelocity(fakeAcceleration(goomba.getVerticalVelocity()));
+        // Resolve jump
+        if (entity.isJumping()) {
+            if (entity.frameInJump++ < entity.framesPerJump) {
+                entity.setVerticalVelocity(-4);
+            } else if (entity.frameInJump == entity.framesPerJump) {
+                entity.setVerticalVelocity(0);
             }
-            goomba.setVelocity(0);
         }
 
+        // Move based on velocity
+        entity.setX(entity.getX() + entity.getVelocity());
+        entity.setY(entity.getY() + entity.getVerticalVelocity());
+
+        if (entity.getX() < 0) {
+            entity.setX(0);
+        }
+
+        Set<Collision> collisions = detectCollisionsWithWorld(entity, level);
+
+        // Remain/land on ground or start falling
+        if (collisions.contains(Collision.DOWN)) {
+            entity.setY(entity.getY() - entity.getVerticalVelocity());
+            entity.setVerticalVelocity(0);
+            entity.endJump();
+        } else if (collisions.contains(Collision.UP)) {
+            entity.setY(entity.getY() - entity.getVerticalVelocity());
+            entity.setVerticalVelocity(BASE_VERTICAL_VELOCITY);
+            entity.endJump();
+        } else {
+            if (entity.getVerticalVelocity() == 0) {
+                entity.setVerticalVelocity(BASE_VERTICAL_VELOCITY);
+            } else {
+                entity.setVerticalVelocity(fakeAcceleration(entity.getVerticalVelocity()));
+            }
+        }
+
+        // Resolve collisions sidewise
         if (collisions.contains(Collision.RIGHT)) {
-            goomba.setHorizontalDirection(HorizontalDirection.LEFT);
-            goomba.setX(goomba.getX() - goomba.getVelocity());
+            entity.setHorizontalDirection(HorizontalDirection.LEFT);
+            entity.setX(entity.getX() - entity.getVelocity());
+        } else if (collisions.contains(Collision.LEFT)) {
+            entity.setHorizontalDirection(HorizontalDirection.RIGHT);
+            entity.setX(entity.getX() - entity.getVelocity());
         }
     }
 
-    public Set<Collision> detectCollisionsWithWorld(Goomba goomba, Level level) {
+    public Set<Collision> detectCollisionsWithWorld(MovingEntity entity, Level level) {
         Set<Collision> collisions = new HashSet<>(4);
 
         // No optimization! Loop through the _entire_ level
         for (BlockBase block : level.getBlocks()) {
-            if (isEitherPointInRectangle(goomba.getCollisionPoints()[Collision.RIGHT.ordinal()], block.getBoundingRectangle())) {
+            if (isEitherPointInRectangle(entity.getCollisionPoints()[Collision.RIGHT.ordinal()], block.getBoundingRectangle())) {
                 collisions.add(Collision.RIGHT);
-            } else if (isEitherPointInRectangle(goomba.getCollisionPoints()[Collision.DOWN.ordinal()], block.getBoundingRectangle())) {
+            } else if (isEitherPointInRectangle(entity.getCollisionPoints()[Collision.LEFT.ordinal()], block.getBoundingRectangle())) {
+                collisions.add(Collision.LEFT);
+            }
+
+            if (isEitherPointInRectangle(entity.getCollisionPoints()[Collision.DOWN.ordinal()], block.getBoundingRectangle())) {
                 collisions.add(Collision.DOWN);
+            } else if (isEitherPointInRectangle(entity.getCollisionPoints()[Collision.UP.ordinal()], block.getBoundingRectangle())) {
+                collisions.add(Collision.UP);
+                block.bump();
             }
         }
         return collisions;

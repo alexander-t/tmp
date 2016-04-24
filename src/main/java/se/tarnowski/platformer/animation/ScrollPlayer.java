@@ -22,11 +22,6 @@ public class ScrollPlayer extends Entity {
     }
 
     @Override
-    public Rectangle getBoundingRectangle() {
-        return null;
-    }
-
-    @Override
     public void update() {
 
         // Limit movement to level

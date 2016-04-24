@@ -15,7 +15,6 @@ public abstract class BlockBase extends Entity {
         this.imageId = imageId;
     }
 
-    @Override
     public Rectangle getBoundingRectangle() {
         return new Rectangle((int) x, (int) y, BLOCK_SIZE, BLOCK_SIZE);
     }

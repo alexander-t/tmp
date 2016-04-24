@@ -1,16 +1,15 @@
 package se.tarnowski.platformer.mario.entity;
 
+import se.tarnowski.platformer.engine.Animation;
 import se.tarnowski.platformer.engine.HorizontalDirection;
 import se.tarnowski.platformer.engine.VerticalDirection;
-import se.tarnowski.platformer.engine.component.InputComponent;
 import se.tarnowski.platformer.engine.component.PhysicsComponent;
+import se.tarnowski.platformer.engine.component.input.DumbWalkerInputComponent;
+import se.tarnowski.platformer.engine.component.input.InputComponent;
 import se.tarnowski.platformer.engine.entity.MovingEntity;
 import se.tarnowski.platformer.mario.GameContext;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Goomba extends MovingEntity {
 
@@ -18,9 +17,7 @@ public class Goomba extends MovingEntity {
 
     private GameContext gameContext;
 
-    private List<String> frames = new ArrayList<>();
-    private String currentImageId;
-    private int frameIndex;
+    private Animation animation = new Animation();
 
     public static final int SPRITE_WIDTH = 16;
     public static final int SPRITE_HEIGHT = 16;
@@ -32,27 +29,20 @@ public class Goomba extends MovingEntity {
             {new Point(0, 2), new Point(0, SPRITE_HEIGHT - 2)},
     };
 
-    private InputComponent inputComponent = new InputComponent();
+    private InputComponent inputComponent = new DumbWalkerInputComponent();
     private PhysicsComponent physicsComponent = new PhysicsComponent();
 
     public Goomba(int x, int y, GameContext gameContext) {
         super(x, y, WALK_ACCELERATION, HorizontalDirection.RIGHT, VerticalDirection.NONE);
         this.gameContext = gameContext;
 
-        frames.add("goomba walk1");
-        frames.add("goomba walk2");
-
-        currentImageId = frames.get(0);
+        animation.add("goomba walk1", 15);
+        animation.add("goomba walk2", 15);
     }
 
     @Override
     public String getCurrentImageId() {
-        return currentImageId;
-    }
-
-    @Override
-    public Rectangle getBoundingRectangle() {
-        return new Rectangle((int) x, (int) y, SPRITE_WIDTH, SPRITE_HEIGHT);
+        return animation.getCurrentImageId();
     }
 
     public Point[][] getCollisionPoints() {
@@ -69,15 +59,6 @@ public class Goomba extends MovingEntity {
     public void update() {
         inputComponent.update(this);
         physicsComponent.update(this, gameContext.getLevel());
-
-        if (frameIndex < 15) {
-            currentImageId = frames.get(0);
-            frameIndex++;
-        } else if (frameIndex < 30) {
-            currentImageId = frames.get(1);
-            frameIndex++;
-        } else {
-            frameIndex = 0;
-        }
+        animation.advance();
     }
 }

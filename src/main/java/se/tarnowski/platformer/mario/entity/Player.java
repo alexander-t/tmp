@@ -1,72 +1,62 @@
 package se.tarnowski.platformer.mario.entity;
 
+import se.tarnowski.platformer.engine.Animation;
 import se.tarnowski.platformer.engine.HorizontalDirection;
 import se.tarnowski.platformer.engine.VerticalDirection;
-import se.tarnowski.platformer.engine.entity.Entity;
+import se.tarnowski.platformer.engine.component.PhysicsComponent;
+import se.tarnowski.platformer.engine.component.input.InputComponent;
+import se.tarnowski.platformer.engine.entity.MovingEntity;
 import se.tarnowski.platformer.mario.GameContext;
 import se.tarnowski.platformer.mario.state.LifeState;
 
 import java.awt.*;
 
-public class Player extends Entity {
-    private GameContext gameContext;
+public class Player extends MovingEntity {
 
-    private String[] imagesFacingRight;
-    private String[] imagesFacingLeft;
-    private String currentImageId;
-    private int frameIndex;
+    private final InputComponent inputComponent;
+    private final PhysicsComponent physicsComponent = new PhysicsComponent();
 
-    private float oldX;
-    private int dx = 2;
-    private LifeState lifeState = LifeState.ALIVE;
-
-    private int animationTicks;
-    private VerticalDirection verticalDirection = VerticalDirection.NONE;
-    private HorizontalDirection horizontalDirection = HorizontalDirection.RIGHT;
-
-    private static final int FRAMES_PER_JUMP = 18;
     private static final int SPRITE_WIDTH = 16;
     private static final int SPRITE_HEIGHT = 24;
+
+    private static Point[][] COLLISION_POINTS = new Point[][]{
+            {new Point(3, 2), new Point(SPRITE_WIDTH - 3, 2)},
+            {new Point(SPRITE_WIDTH, 4), new Point(SPRITE_WIDTH, SPRITE_HEIGHT - 4)},
+            {new Point(3, SPRITE_HEIGHT - 2), new Point(SPRITE_WIDTH - 3, SPRITE_HEIGHT - 2)},
+            {new Point(0, 4), new Point(0, SPRITE_HEIGHT - 4)},
+    };
+
+    private GameContext gameContext;
+
+    private LifeState lifeState = LifeState.ALIVE;
+
 
     private static final String IMAGE_ID_DYING = "mario dying";
     private static final String IMAGE_ID_JUMP_LEFT = "mario jump left";
     private static final String IMAGE_ID_JUMP_RIGHT = "mario jump right";
 
-    public Player(int x, int y) {
-        super(x, y);
-        oldX = x;
+    private Animation walkRightAnimation;
+    private Animation walkLeftAnimation;
+    private Animation currentAnimation;
+    private String currentImageId;
 
-        imagesFacingRight = new String[]{
-                "mario walk right1",
-                "mario walk right1",
-                "mario walk right2",
-                "mario walk right2",
-                "mario walk right2",
-                "mario walk right2",
-                "mario walk right3",
-                "mario walk right3",
-                "mario walk right4",
-                "mario walk right4",
-                "mario walk right4",
-                "mario walk right4",
-        };
+    public Player(int x, int y, InputComponent inputComponent) {
+        super(x, y, 0, null, null);
+        this.inputComponent = inputComponent;
 
-        imagesFacingLeft = new String[]{
-                "mario walk left1",
-                "mario walk left1",
-                "mario walk left2",
-                "mario walk left2",
-                "mario walk left2",
-                "mario walk left2",
-                "mario walk left3",
-                "mario walk left3",
-                "mario walk left4",
-                "mario walk left4",
-                "mario walk left4",
-                "mario walk left4",
-        };
+        walkRightAnimation = new Animation()
+                .add("mario walk right1", 3)
+                .add("mario walk right2", 5)
+                .add("mario walk right3", 3)
+                .add("mario walk right4", 5);
 
-        currentImageId = imagesFacingRight[0];
+        walkLeftAnimation = new Animation()
+                .add("mario walk left1", 3)
+                .add("mario walk left2", 5)
+                .add("mario walk left3", 3)
+                .add("mario walk left4", 5);
+
+        currentAnimation = walkRightAnimation;
     }
 
     public void setGameContext(GameContext gameContext) {
@@ -78,85 +68,59 @@ public class Player extends Entity {
         return currentImageId;
     }
 
-    public void moveRight() {
-        if (lifeState == LifeState.DYING) {
-            return;
-        }
-
-        horizontalDirection = HorizontalDirection.RIGHT;
-        if (!gameContext.detectCollisionsWithWorld(getBoundingRectangleXExpandedBy(dx), VerticalDirection.NONE)) {
-            x += dx;
-        }
-        frameIndex++;
-        frameIndex %= imagesFacingRight.length;
-    }
-
-    public void moveLeft() {
-        if (lifeState == LifeState.DYING) {
-            return;
-        }
-
-        horizontalDirection = HorizontalDirection.LEFT;
-        if (!gameContext.detectCollisionsWithWorld(getBoundingRectangleXExpandedBy(-4), VerticalDirection.NONE)) {
-            x -= dx;
-        }
-        frameIndex++;
-        frameIndex %= imagesFacingRight.length;
-    }
-
-    public void walk() {
-        dx = 2;
-    }
-
-    public void sprint() {
-        if (verticalDirection == VerticalDirection.NONE) {
-            dx = 4;
-        }
-    }
-
     public void jump() {
         if (lifeState == LifeState.DYING) {
             return;
-        }
-
-        if (verticalDirection == VerticalDirection.NONE) {
-            verticalDirection = VerticalDirection.UP;
-            animationTicks = 0;
         }
     }
 
     public void respawnAt(float x, float y) {
         this.x = x;
         this.y = y;
-        frameIndex = 0;
         lifeState = LifeState.ALIVE;
         gameContext.getViewPort().resetCamera();
     }
 
-    @Override
-    public Rectangle getBoundingRectangle() {
-        return new Rectangle((int) x, (int) y, SPRITE_WIDTH, SPRITE_WIDTH);
-    }
-
-    public Rectangle getBoundingRectangleYExpandedBy(int dy) {
-        if (dy >= 0) {
-            return new Rectangle((int) x, (int) y, SPRITE_WIDTH, SPRITE_HEIGHT - 1 + dy);
-        } else {
-            return new Rectangle((int) x, (int) y + dy, SPRITE_WIDTH, SPRITE_HEIGHT - 1 - dy);
+    public Point[][] getCollisionPoints() {
+        Point[][] absolutePoints = new Point[COLLISION_POINTS.length][COLLISION_POINTS[0].length];
+        for (int y = 0; y < COLLISION_POINTS.length; y++) {
+            for (int x = 0; x < COLLISION_POINTS[0].length; x++) {
+                absolutePoints[y][x] = new Point(COLLISION_POINTS[y][x].x + (int) getX(), COLLISION_POINTS[y][x].y + (int) getY());
+            }
         }
-    }
-
-    public Rectangle getBoundingRectangleXExpandedBy(int dx) {
-        if (dx >= 0) {
-            return new Rectangle((int) x, (int) y, SPRITE_WIDTH + dx, SPRITE_HEIGHT - 1);
-        } else {
-            return new Rectangle((int) x + dx, (int) y, SPRITE_WIDTH - dx, SPRITE_HEIGHT - 1);
-        }
+        return absolutePoints;
     }
 
     @Override
     public void update() {
+        float oldVelocity = velocity;
 
+        inputComponent.update(this);
+        physicsComponent.update(this, gameContext.getLevel());
+
+        if (isJumping()) {
+            currentImageId = horizontalDirection == HorizontalDirection.RIGHT ? IMAGE_ID_JUMP_RIGHT : IMAGE_ID_JUMP_LEFT;
+        } else {
+            if (velocity > 0) {
+                currentAnimation = walkRightAnimation;
+                if (oldVelocity * velocity < 0) {
+                    currentAnimation.reset();
+                } else {
+                    currentAnimation.advance();
+                }
+            } else if (velocity < 0) {
+                currentAnimation = walkLeftAnimation;
+                if (oldVelocity * velocity < 0) {
+                    currentAnimation.reset();
+                } else {
+                    currentAnimation.advance();
+                }
+            } else {
+                currentAnimation.reset();
+            }
+            currentImageId = currentAnimation.getCurrentImageId();
+        }
+/*
         final int viewPortWidth = gameContext.getViewPortWidth();
         final int viewPortHeight = gameContext.getViewPortHeight();
 
@@ -183,7 +147,7 @@ public class Player extends Entity {
                 gameContext.getViewPort().setCamY((int) y - gameContext.getViewPort().getHeight() / 2);
             }
         }
-
+/*
         if (lifeState == lifeState.DYING) {
             currentImageId = IMAGE_ID_DYING;
             if (animationTicks++ < 5) {
@@ -243,19 +207,11 @@ public class Player extends Entity {
             lifeState = lifeState.DYING;
             animationTicks = 0;
         }
+        */
     }
 
     public LifeState getLifeState() {
         return lifeState;
-    }
-
-    // For testing
-    VerticalDirection getVerticalDirection() {
-        return verticalDirection;
-    }
-
-    HorizontalDirection getHorizontalDirection() {
-        return horizontalDirection;
     }
 }
 

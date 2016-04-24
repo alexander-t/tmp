@@ -1,6 +1,7 @@
 package se.tarnowski.platformer.mario.view.swing;
 
 import se.tarnowski.platformer.engine.entity.Entity;
+import se.tarnowski.platformer.engine.entity.MovingEntity;
 import se.tarnowski.platformer.engine.sprite.swing.SpriteCache;
 import se.tarnowski.platformer.engine.view.ViewPort;
 import se.tarnowski.platformer.mario.GameContext;
@@ -35,13 +36,13 @@ public class SwingViewPort extends JFrame implements ViewPort {
 
                 for (Entity enemy : gameContext.enemies) {
                     g.drawImage(SpriteCache.get(enemy.getCurrentImageId()), (int) enemy.getX(), (int) enemy.getY(), null);
-                    if (enemy instanceof Goomba) {
-                        g.setColor(Color.black);
-                        Goomba goomba = (Goomba) enemy;
-                        for (int cpy = 0; cpy < goomba.getCollisionPoints().length; cpy++) {
-                            for (int cpx = 0; cpx < goomba.getCollisionPoints()[0].length; cpx++) {
-                                g.drawLine(goomba.getCollisionPoints()[cpy][cpx].x, goomba.getCollisionPoints()[cpy][cpx].y,
-                                        goomba.getCollisionPoints()[cpy][cpx].x, goomba.getCollisionPoints()[cpy][cpx].y);
+                    if (enemy instanceof MovingEntity) {
+                        g.setColor(Color.red);
+                        MovingEntity movingEntity = (MovingEntity) enemy;
+                        for (int cpy = 0; cpy < movingEntity.getCollisionPoints().length; cpy++) {
+                            for (int cpx = 0; cpx < movingEntity.getCollisionPoints()[0].length; cpx++) {
+                                g.drawLine(movingEntity.getCollisionPoints()[cpy][cpx].x, movingEntity.getCollisionPoints()[cpy][cpx].y,
+                                        movingEntity.getCollisionPoints()[cpy][cpx].x, movingEntity.getCollisionPoints()[cpy][cpx].y);
                             }
                         }
                     }
@@ -49,6 +50,16 @@ public class SwingViewPort extends JFrame implements ViewPort {
 
                 Player player = gameContext.player;
                 g.drawImage(SpriteCache.get(player.getCurrentImageId()), (int) player.getX(), (int) player.getY(), null);
+
+                g.setColor(Color.red);
+                for (int cpy = 0; cpy < player.getCollisionPoints().length; cpy++) {
+                    for (int cpx = 0; cpx < player.getCollisionPoints()[0].length; cpx++) {
+                        g.drawLine(player.getCollisionPoints()[cpy][cpx].x, player.getCollisionPoints()[cpy][cpx].y,
+                                player.getCollisionPoints()[cpy][cpx].x, player.getCollisionPoints()[cpy][cpx].y);
+                    }
+                }
+
+
 
                 g.setColor(Color.lightGray);
                 g.fill3DRect(camX, camY, getWidth(), 16, true);

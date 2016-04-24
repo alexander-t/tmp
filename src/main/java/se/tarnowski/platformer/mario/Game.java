@@ -1,5 +1,7 @@
 package se.tarnowski.platformer.mario;
 
+import se.tarnowski.platformer.engine.component.input.InputComponent;
+import se.tarnowski.platformer.engine.component.input.KeyboardInputComponent;
 import se.tarnowski.platformer.engine.input.swing.KeyAdapterInputHandler;
 import se.tarnowski.platformer.engine.sprite.swing.SpriteCache;
 import se.tarnowski.platformer.mario.entity.BlockBase;
@@ -17,10 +19,9 @@ public class Game {
     private final GameContext gameContext;
 
     private final KeyAdapterInputHandler inputHandler;
-    private boolean allowJump = true;
 
     private static final int PLAYER_START_X = BlockBase.BLOCK_SIZE;
-    private static final int PLAYER_START_Y = BlockBase.BLOCK_SIZE * 10;
+    private static final int PLAYER_START_Y = BlockBase.BLOCK_SIZE * 21 - 10;
 
     public Game() {
 
@@ -40,12 +41,13 @@ public class Game {
         SpriteCache.addFlipped("mario jump left", "mario jump right");
         SpriteCache.add("mario dying", "heroes", 411, 7, 16, 24);
 
-        player = new Player(PLAYER_START_X, PLAYER_START_Y);
+        inputHandler = new KeyAdapterInputHandler();
+        InputComponent keyboardInputComponent = new KeyboardInputComponent(inputHandler);
+        player = new Player(PLAYER_START_X, PLAYER_START_Y, keyboardInputComponent);
         level = LevelBuilder.buildLevel();
         gameContext = new GameContext(player, level);
         //gameContext.addEnemy(new Goomba(680, 511, gameContext));
         gameContext.addEnemy(new Goomba(350, 511, gameContext));
-        inputHandler = new KeyAdapterInputHandler();
 
         final SwingViewPort viewPort = new SwingViewPort(gameContext);
         viewPort.addKeyListener(inputHandler);
@@ -53,10 +55,7 @@ public class Game {
         new Thread(() -> {
             while (true) {
                 long startTime = System.currentTimeMillis();
-
-                processInput();
                 update();
-
                 viewPort.repaint();
 
                 if (player.getLifeState() == LifeState.DEAD) {
@@ -69,30 +68,6 @@ public class Game {
                 }
             }
         }).start();
-    }
-
-    private void processInput() {
-        if (inputHandler.shiftPressed) {
-            player.sprint();
-        } else {
-            player.walk();
-        }
-
-        // Don't else if here. If two opposite directions are pressed, that's the player's problem
-        if (inputHandler.rightArrowPressed) {
-            player.moveRight();
-        }
-
-        if (inputHandler.leftArrowPressed) {
-            player.moveLeft();
-        }
-
-        if (inputHandler.upArrowPressed && allowJump) {
-            allowJump = false;
-            player.jump();
-        } else if (!inputHandler.upArrowPressed){
-            allowJump = true;
-        }
     }
 
     private void update() {

@@ -35,7 +35,7 @@ public class GameContext {
         }
         return false;
     }
-
+/*
     public boolean detectCollisionsWithEnemies(Rectangle rectangle) {
         for (Entity enemy : enemies) {
             if (rectangle.intersects(enemy.getBoundingRectangle())) {
@@ -44,7 +44,7 @@ public class GameContext {
         }
         return false;
     }
-
+*/
     public void addEnemy(Goomba goomba) {
         enemies.add(goomba);
     }

@@ -10,8 +10,10 @@ public class BumpableBlock extends BlockBase {
     }
 
     public void bump() {
-        bumped = true;
-        bumpTicks = 0;
+        if (!bumped) {
+            bumped = true;
+            bumpTicks = 0;
+        }
     }
 
     @Override
