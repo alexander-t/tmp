@@ -1,9 +1,8 @@
 package se.tarlinder.platformer;
 
-import se.tarnowski.platformer.mario.Level;
-import se.tarnowski.platformer.mario.entity.BlockBase;
-import se.tarnowski.platformer.mario.entity.BumpableBlock;
-import se.tarnowski.platformer.mario.entity.ImmobileBlock;
+import se.tarlinder.platformer.mario.Level;
+import se.tarlinder.platformer.mario.entity.BlockBase;
+import se.tarlinder.platformer.mario.entity.ImmobileBlock;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package se.tarlinder.platformer;
 
-import se.tarnowski.platformer.engine.view.ViewPort;
+import se.tarlinder.platformer.engine.view.ViewPort;
 
 public class NullViewPort implements ViewPort {
     @Override
