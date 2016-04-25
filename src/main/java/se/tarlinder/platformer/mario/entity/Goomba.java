@@ -15,29 +15,27 @@ public class Goomba extends MovingEntity {
 
     public static final float WALK_ACCELERATION = 0.7f;
 
-    private GameContext gameContext;
-
-    private Animation animation = new Animation();
-
-    public static final int SPRITE_WIDTH = 16;
-    public static final int SPRITE_HEIGHT = 16;
-
+    private static final int WIDTH = 16;
+    private static final int HEIGHT = 16;
     private static Point[][] COLLISION_POINTS = new Point[][]{
-            {new Point(3, 0), new Point(SPRITE_WIDTH - 3, 0)},
-            {new Point(SPRITE_WIDTH, 2), new Point(SPRITE_WIDTH, SPRITE_HEIGHT - 2)},
-            {new Point(2, SPRITE_HEIGHT), new Point(SPRITE_WIDTH - 2, SPRITE_HEIGHT)},
-            {new Point(0, 2), new Point(0, SPRITE_HEIGHT - 2)},
+            {new Point(3, 0), new Point(WIDTH - 3, 0)},
+            {new Point(WIDTH, 2), new Point(WIDTH, HEIGHT - 2)},
+            {new Point(2, HEIGHT), new Point(WIDTH - 2, HEIGHT)},
+            {new Point(0, 2), new Point(0, HEIGHT - 2)},
     };
 
+    private GameContext gameContext;
+    private Animation animation;
     private InputComponent inputComponent = new DumbWalkerInputComponent();
     private PhysicsComponent physicsComponent = new PhysicsComponent();
 
     public Goomba(int x, int y, GameContext gameContext) {
-        super(x, y, WALK_ACCELERATION, HorizontalDirection.RIGHT, VerticalDirection.NONE);
+        super(x, y, WIDTH, HEIGHT, WALK_ACCELERATION, HorizontalDirection.RIGHT, VerticalDirection.NONE);
         this.gameContext = gameContext;
 
-        animation.add("goomba walk1", 15);
-        animation.add("goomba walk2", 15);
+        animation = new Animation()
+                .add("goomba walk1", 15)
+                .add("goomba walk2", 15);
     }
 
     @Override

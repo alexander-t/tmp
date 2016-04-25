@@ -32,7 +32,7 @@ class PhysicsComponentTest extends Specification {
                 "I"].toArray())
 
         and: "A stationary goomba standing on it"
-        final int groundY = BlockBase.BLOCK_SIZE - Goomba.SPRITE_HEIGHT
+        final int groundY = BlockBase.BLOCK_SIZE - Goomba.HEIGHT
         def stationaryGoomba = new Goomba(0, groundY, null)
         stationaryGoomba.setVelocity(0)
 
@@ -61,7 +61,7 @@ class PhysicsComponentTest extends Specification {
         1000.times {physicsComponent.update(fallingGoomba, level)}
 
         then: "The goomba lands on the ground"
-        (int) fallingGoomba.getY() == BlockBase.BLOCK_SIZE * 2 - Goomba.SPRITE_HEIGHT - 1
+        (int) fallingGoomba.getY() == BlockBase.BLOCK_SIZE * 2 - Goomba.HEIGHT - 1
         // Don't test the vertical velocity, since it'll oscillate on even/odd frames
     }
 

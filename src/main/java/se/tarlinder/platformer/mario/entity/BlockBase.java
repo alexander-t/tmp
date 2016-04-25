@@ -11,7 +11,7 @@ public abstract class BlockBase extends Entity {
     protected String imageId;
 
     public BlockBase(int x, int y, String imageId) {
-        super(x, y);
+        super(x, y, BLOCK_SIZE, BLOCK_SIZE);
         this.imageId = imageId;
     }
 

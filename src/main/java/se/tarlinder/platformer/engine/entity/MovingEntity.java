@@ -17,8 +17,8 @@ public abstract class MovingEntity extends Entity {
     public int frameInJump = 0;
     /////////////////////////////////////////////
 
-    public MovingEntity(int x, int y, float initialVelocity, HorizontalDirection initialHorizontalDirection, VerticalDirection initialVerticalDirection) {
-        super(x, y);
+    public MovingEntity(int x, int y, int width, int height, float initialVelocity, HorizontalDirection initialHorizontalDirection, VerticalDirection initialVerticalDirection) {
+        super(x, y, width, height);
         velocity = initialVelocity;
         horizontalDirection = initialHorizontalDirection;
         verticalDirection = initialVerticalDirection;
@@ -59,7 +59,7 @@ public abstract class MovingEntity extends Entity {
     }
 
     public void startJump() {
-        if (!isJumping && verticalVelocity == 0) {
+        if (!isJumping) {
             isJumping = true;
             frameInJump = 0;
         }

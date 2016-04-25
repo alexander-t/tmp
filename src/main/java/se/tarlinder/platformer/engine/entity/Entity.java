@@ -1,18 +1,20 @@
 package se.tarlinder.platformer.engine.entity;
 
-import java.awt.*;
-
 public abstract class Entity {
 
     protected float x;
     protected float y;
+    protected final int width;
+    protected final int height;
 
     public abstract String getCurrentImageId();
     public abstract void update();
 
-    public Entity(int x, int y) {
+    public Entity(float x, float y, int width, int height) {
         this.x = x;
         this.y = y;
+        this.width = width;
+        this.height = height;
     }
 
     public float getX() {
@@ -29,5 +31,13 @@ public abstract class Entity {
 
     public void setY(float y) {
         this.y = y;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

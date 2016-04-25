@@ -11,7 +11,7 @@ public class ScrollPlayer extends Entity {
     private static final int HEIGHT = 48;
 
     public ScrollPlayer() {
-        super(10 * BlockBase.BLOCK_SIZE, 3 * BlockBase.BLOCK_SIZE);
+        super(10 * BlockBase.BLOCK_SIZE, 3 * BlockBase.BLOCK_SIZE, WIDTH, HEIGHT);
     }
 
     @Override
