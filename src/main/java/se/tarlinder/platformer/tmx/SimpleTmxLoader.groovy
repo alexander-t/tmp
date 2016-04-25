@@ -14,6 +14,8 @@ class SimpleTmxLoader {
     private int mapHeight;
     private tiles = [:]
 
+    SimpleTmxLoader() {}
+
     SimpleTmxLoader(Reader reader) {
 
         def mapNode = new XmlSlurper().parse(reader)

@@ -13,9 +13,15 @@ import java.util.List;
 
 public class LevelBuilder {
 
-    public static Level buildLevel() {
+
+    private SimpleTmxLoader tmxLoader;
+
+    public LevelBuilder(SimpleTmxLoader tmxLoader) {
+        this.tmxLoader = tmxLoader;
+    }
+
+    public Level buildLevel() {
         List<BlockBase> blocks = new ArrayList<>();
-        SimpleTmxLoader tmxLoader = new SimpleTmxLoader(new InputStreamReader(LevelBuilder.class.getResourceAsStream("/levels/mario.tmx")));
         tmxLoader.getTiles().values().stream().forEach(t ->
                 SpriteCache.addImage("" + t.getId(), t.getImage().replaceAll("^.*(sprites\\/.*)", "/$1")));
         for (int y = 0; y < tmxLoader.getMapHeight(); y++) {

@@ -1,14 +1,17 @@
 package se.tarlinder.platformer.mario;
 
-import se.tarlinder.platformer.engine.component.input.KeyboardInputComponent;
-import se.tarlinder.platformer.mario.entity.BlockBase;
-import se.tarlinder.platformer.mario.entity.Player;
-import se.tarlinder.platformer.mario.view.swing.SwingViewPort;
 import se.tarlinder.platformer.engine.component.input.InputComponent;
+import se.tarlinder.platformer.engine.component.input.KeyboardInputComponent;
 import se.tarlinder.platformer.engine.input.swing.KeyAdapterInputHandler;
 import se.tarlinder.platformer.engine.sprite.swing.SpriteCache;
+import se.tarlinder.platformer.mario.entity.BlockBase;
 import se.tarlinder.platformer.mario.entity.Goomba;
+import se.tarlinder.platformer.mario.entity.Player;
 import se.tarlinder.platformer.mario.state.LifeState;
+import se.tarlinder.platformer.mario.view.swing.SwingViewPort;
+import se.tarlinder.platformer.tmx.SimpleTmxLoader;
+
+import java.io.InputStreamReader;
 
 public class Game {
 
@@ -44,7 +47,7 @@ public class Game {
         inputHandler = new KeyAdapterInputHandler();
         InputComponent keyboardInputComponent = new KeyboardInputComponent(inputHandler);
         player = new Player(PLAYER_START_X, PLAYER_START_Y, keyboardInputComponent);
-        level = LevelBuilder.buildLevel();
+        level = new LevelBuilder(new SimpleTmxLoader(new InputStreamReader(this.getClass().getResourceAsStream("/levels/mario.tmx")))).buildLevel();
         gameContext = new GameContext(player, level);
         //gameContext.addEnemy(new Goomba(680, 511, gameContext));
         gameContext.addEnemy(new Goomba(350, 511, gameContext));
