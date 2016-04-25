@@ -119,20 +119,9 @@ public class Player extends MovingEntity {
             }
             currentImageId = currentAnimation.getCurrentImageId();
         }
-/*
+
         final int viewPortWidth = gameContext.getViewPortWidth();
         final int viewPortHeight = gameContext.getViewPortHeight();
-
-        // Limit movement to level
-        if (x < 0) {
-            x = 0;
-        } else if (x > gameContext.getLevel().widthInPixels() - SPRITE_WIDTH) {
-            x = gameContext.getLevel().widthInPixels() - SPRITE_WIDTH;
-        }
-
-        if (y < 0) {
-            y = 0;
-        }
 
         // Move camera
         if (x >= viewPortWidth / 2) {
