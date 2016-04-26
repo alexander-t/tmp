@@ -14,6 +14,10 @@ public class NullViewPort implements ViewPort {
     }
 
     @Override
+    public void update() {
+    }
+
+    @Override
     public void setCamX(int camX) {
     }
 

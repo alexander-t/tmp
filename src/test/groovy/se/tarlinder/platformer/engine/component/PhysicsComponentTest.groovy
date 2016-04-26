@@ -6,10 +6,9 @@ import se.tarlinder.platformer.mario.entity.BlockBase
 import se.tarlinder.platformer.mario.entity.Goomba
 import spock.lang.Specification
 import spock.lang.Subject
-import static  org.hamcrest.number.IsCloseTo.closeTo
-import static  org.hamcrest.number.OrderingComparison.*
+
+import static org.hamcrest.number.OrderingComparison.greaterThan
 import static spock.util.matcher.HamcrestSupport.expect
-import static spock.util.matcher.HamcrestSupport.that;
 
 class PhysicsComponentTest extends Specification {
 
@@ -28,66 +27,6 @@ class PhysicsComponentTest extends Specification {
         fallingGoomba.getVerticalVelocity() > PhysicsComponent.BASE_VERTICAL_VELOCITY
         fallingGoomba.getY() == PhysicsComponent.BASE_VERTICAL_VELOCITY
     }
-
-    // Conference
-    def "A Goomba placed in mid-air will start falling #2"() {
-        given: "An empty level and a Goomba floating in mid-air"
-        def emptyLevel = new Level(10, 10, [])
-        def fallingGoomba = new Goomba(0, 0, null)
-
-        when:
-        physicsComponent.update(fallingGoomba, emptyLevel)
-
-        then:
-        fallingGoomba.getVerticalVelocity() == PhysicsComponent.BASE_VERTICAL_VELOCITY
-        fallingGoomba.getY() == 0
-
-        when:
-        physicsComponent.update(fallingGoomba, emptyLevel)
-
-        then:
-        fallingGoomba.getVerticalVelocity() > PhysicsComponent.BASE_VERTICAL_VELOCITY
-        fallingGoomba.getY() == PhysicsComponent.BASE_VERTICAL_VELOCITY
-    }
-
-    // Conference
-    def "A Goomba placed in mid-air will start falling #3"() {
-        given: "An empty level"
-        def emptyLevel = new Level(10, 10, [])
-
-        and:  "A Goomba floating in mid-air"
-        def fallingGoomba = new Goomba(0, 0, null)
-
-        when: "The time is adanced by one frame"
-        physicsComponent.update(fallingGoomba, emptyLevel)
-
-        and: "The time is advanced by another frame"
-        physicsComponent.update(fallingGoomba, emptyLevel)
-
-        then: "The Goomba has started accelerating"
-        fallingGoomba.getVerticalVelocity() > PhysicsComponent.BASE_VERTICAL_VELOCITY
-
-        and: "It has fallen some distance"
-        fallingGoomba.getY() > old(fallingGoomba.getY())
-    }
-
-    // Conference
-    def "A Goomba placed in mid-air will start falling #4"() {
-        given:
-        def emptyLevel = new Level(10, 10, [])
-        def fallingGoomba = new Goomba(0, 0, null)
-
-        when:
-        5.times { physicsComponent.update(fallingGoomba, emptyLevel) }
-
-        then:
-        with(fallingGoomba) {
-            expect getVerticalVelocity(), greaterThan(PhysicsComponent.BASE_VERTICAL_VELOCITY)
-            expect getY(), greaterThan(PhysicsComponent.BASE_VERTICAL_VELOCITY)
-        }
-    }
-
-
 
     def "A Goomba standing on the ground will remain there"() {
         given: "A level with some ground"

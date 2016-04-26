@@ -59,7 +59,7 @@ public class Game {
             while (true) {
                 long startTime = System.currentTimeMillis();
                 update();
-                viewPort.repaint();
+                viewPort.update();
 
                 if (player.getLifeState() == LifeState.DEAD) {
                     player.respawnAt(PLAYER_START_X, PLAYER_START_Y);

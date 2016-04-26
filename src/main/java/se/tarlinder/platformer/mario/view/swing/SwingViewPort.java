@@ -67,20 +67,30 @@ public class SwingViewPort extends JFrame implements ViewPort {
             }
         };
         viewPort.setPreferredSize(new Dimension(BlockBase.BLOCK_SIZE * 32, BlockBase.BLOCK_SIZE * 22));
+        backgroundImage = ImageUtils.loadImageResource("/sprites/realistic/sky.jpg");
         add(viewPort);
         pack();
+        setLocationRelativeTo( null );
         setVisible(true);
-        backgroundImage = ImageUtils.loadImageResource("/sprites/realistic/sky.jpg");
+
     }
 
+    @Override
+    public void update() {
+        repaint();
+    }
+
+    @Override
     public void setCamX(int camX) {
         this.camX = camX;
     }
 
+    @Override
     public void setCamY(int camY) {
         this.camY = camY;
     }
 
+    @Override
     public void resetCamera() {
         camX = camY = 0;
     }

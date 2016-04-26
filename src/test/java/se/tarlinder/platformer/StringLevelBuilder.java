@@ -16,8 +16,9 @@ public class StringLevelBuilder {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 char tileSymbol = levelData[y].charAt(x);
-                if (tileSymbol == 'I') {
-                    blocks.add(new ImmobileBlock(x * 24, y * 24, tileSymbol + ""));
+                if (tileSymbol != ' ') {
+                    blocks.add(new ImmobileBlock(x * BlockBase.BLOCK_SIZE,
+                            y *  BlockBase.BLOCK_SIZE, tileSymbol + ""));
                 }
             }
         }
