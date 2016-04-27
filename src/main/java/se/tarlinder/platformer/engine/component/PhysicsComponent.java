@@ -34,6 +34,13 @@ public class PhysicsComponent {
             entity.setX(0);
         }
 
+        // Determine facing
+        if (entity.getVelocity() > 0) {
+            entity.setHorizontalDirection(HorizontalDirection.RIGHT);
+        } else if (entity.getVelocity() < 0) {
+            entity.setHorizontalDirection(HorizontalDirection.LEFT);
+        }
+
         Set<Collision> collisions = detectCollisionsWithWorld(entity, level);
 
         // Remain/land on ground or start falling

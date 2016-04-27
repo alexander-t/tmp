@@ -29,7 +29,6 @@ public class Player extends MovingEntity {
 
     private LifeState lifeState = LifeState.ALIVE;
 
-
     private static final String IMAGE_ID_DYING = "mario dying";
     private static final String IMAGE_ID_JUMP_LEFT = "mario jump left";
     private static final String IMAGE_ID_JUMP_RIGHT = "mario jump right";
@@ -40,7 +39,7 @@ public class Player extends MovingEntity {
     private String currentImageId;
 
     public Player(int x, int y, InputComponent inputComponent) {
-        super(x, y, SPRITE_WIDTH, SPRITE_HEIGHT, 0, null, null);
+        super(x, y, SPRITE_WIDTH, SPRITE_HEIGHT, 0, HorizontalDirection.RIGHT, null);
         this.inputComponent = inputComponent;
 
         walkRightAnimation = new Animation()
