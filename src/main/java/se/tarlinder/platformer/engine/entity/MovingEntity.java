@@ -3,6 +3,7 @@ package se.tarlinder.platformer.engine.entity;
 import se.tarlinder.platformer.engine.Animation;
 import se.tarlinder.platformer.engine.HorizontalDirection;
 import se.tarlinder.platformer.engine.VerticalDirection;
+import se.tarlinder.platformer.mario.state.LifeState;
 
 import java.awt.*;
 
@@ -18,9 +19,11 @@ public abstract class MovingEntity extends Entity {
     protected String jumpLeftImageId;
     protected String jumpRightimageId;
 
+    protected LifeState lifeState = LifeState.ALIVE;
+
     ///////////////////////////////////////////
     protected boolean isJumping;
-    public final int framesPerJump = 16;
+    public final int framesPerJump = 18;
     public int frameInJump = 0;
     /////////////////////////////////////////////
 
@@ -105,5 +108,13 @@ public abstract class MovingEntity extends Entity {
 
     public void endJump() {
         isJumping = false;
+    }
+
+    public void kill() {
+        lifeState = LifeState.DEAD;
+    }
+
+    public LifeState getLifeState() {
+        return lifeState;
     }
 }

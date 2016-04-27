@@ -5,6 +5,7 @@ import se.tarlinder.platformer.engine.HorizontalDirection;
 import se.tarlinder.platformer.engine.entity.MovingEntity;
 import se.tarlinder.platformer.mario.Level;
 import se.tarlinder.platformer.mario.entity.BlockBase;
+import se.tarlinder.platformer.mario.state.LifeState;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -16,6 +17,10 @@ public class PhysicsComponent {
     public static final float BASE_VERTICAL_VELOCITY = 1.0f;
 
     public void update(MovingEntity entity, Level level) {
+
+        if (entity.getLifeState() == LifeState.DEAD) {
+            return;
+        }
 
         // Resolve jump
         if (entity.isJumping()) {
@@ -67,6 +72,10 @@ public class PhysicsComponent {
         } else if (collisions.contains(Collision.LEFT)) {
             entity.setHorizontalDirection(HorizontalDirection.RIGHT);
             entity.setX(entity.getX() - entity.getVelocity());
+        }
+
+        if (entity.getY() > level.heightInPixels()) {
+            entity.kill();
         }
     }
 

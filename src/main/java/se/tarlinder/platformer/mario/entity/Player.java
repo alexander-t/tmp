@@ -29,8 +29,6 @@ public class Player extends MovingEntity {
 
     private GameContext gameContext;
 
-    private LifeState lifeState = LifeState.ALIVE;
-
     private static final String IMAGE_ID_DYING = "mario dying";
     private static final String IMAGE_ID_JUMP_LEFT = "mario jump left";
     private static final String IMAGE_ID_JUMP_RIGHT = "mario jump right";
@@ -62,19 +60,6 @@ public class Player extends MovingEntity {
     @Override
     public String getCurrentImageId() {
         return currentImageId;
-    }
-
-    public void jump() {
-        if (lifeState == LifeState.DYING) {
-            return;
-        }
-    }
-
-    public void respawnAt(float x, float y) {
-        this.x = x;
-        this.y = y;
-        lifeState = LifeState.ALIVE;
-        gameContext.getViewPort().resetCamera();
     }
 
     public Point[][] getCollisionPoints() {
@@ -175,8 +160,11 @@ public class Player extends MovingEntity {
         */
     }
 
-    public LifeState getLifeState() {
-        return lifeState;
+    public void respawnAt(float x, float y) {
+        this.x = x;
+        this.y = y;
+        lifeState = LifeState.ALIVE;
+        gameContext.getViewPort().resetCamera();
     }
 }
 
