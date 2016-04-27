@@ -15,10 +15,8 @@ import java.awt.*;
 
 public class Player extends MovingEntity {
 
-    private InputComponent inputComponent;
     private PhysicsComponent physicsComponent = new PhysicsComponent();
     private GraphicsComponent graphicsComponent = new GraphicsComponent();
-    private CameraComponent cameraComponent = new ScrollViewPortCameraComponent();
 
     private static final int SPRITE_WIDTH = 16;
     private static final int SPRITE_HEIGHT = 24;
@@ -52,13 +50,10 @@ public class Player extends MovingEntity {
                         .add("mario walk left4", 5));
 
         this.inputComponent = inputComponent;
-        this.jumpRightimageId = IMAGE_ID_JUMP_RIGHT;
-        this.jumpLeftImageId = IMAGE_ID_JUMP_LEFT;
-    }
 
-    public Player withCameraComponent(CameraComponent cameraComponent) {
-        this.cameraComponent = cameraComponent;
-        return this;
+        cameraComponent = new ScrollViewPortCameraComponent();
+        jumpRightimageId = IMAGE_ID_JUMP_RIGHT;
+        jumpLeftImageId = IMAGE_ID_JUMP_LEFT;
     }
 
     public void setGameContext(GameContext gameContext) {
@@ -104,47 +99,6 @@ public class Player extends MovingEntity {
             }
             return;
         }
-
-        if (verticalDirection != VerticalDirection.UP) {
-            // Is player on solid ground?
-            if (gameContext.detectCollisionsWithWorld(getBoundingRectangleYExpandedBy(4), VerticalDirection.DOWN)) {
-                verticalDirection = VerticalDirection.NONE;
-            } else {
-                verticalDirection = VerticalDirection.DOWN;
-                y += 4;
-                if (y >= gameContext.getLevel().heightInPixels()) {
-                    lifeState = LifeState.DEAD;
-                    return;
-                }
-            }
-        }
-
-        if (verticalDirection == VerticalDirection.DOWN) {
-            currentImageId = horizontalDirection == HorizontalDirection.RIGHT ? IMAGE_ID_JUMP_RIGHT : IMAGE_ID_JUMP_LEFT;
-        } else if (verticalDirection == VerticalDirection.UP) {
-            if (animationTicks++ < FRAMES_PER_JUMP) {
-                Rectangle rectangle = getBoundingRectangleYExpandedBy(-4);
-                if (!gameContext.detectCollisionsWithWorld(rectangle, VerticalDirection.UP)) {
-                    y -= 4;
-                } else {
-                    animationTicks = FRAMES_PER_JUMP;
-                }
-            } else {
-                // Start falling
-                verticalDirection = VerticalDirection.DOWN;
-            }
-            currentImageId = horizontalDirection == HorizontalDirection.RIGHT ?
-                    IMAGE_ID_JUMP_RIGHT : IMAGE_ID_JUMP_LEFT;
-        } else {
-
-            // Reset to standing still if player hasn't moved
-            if (oldX == x) {
-                frameIndex = 0;
-            }
-            currentImageId = horizontalDirection == HorizontalDirection.RIGHT ?
-                    imagesFacingRight[frameIndex] : imagesFacingLeft[frameIndex];
-        }
-        oldX = x;
 
         if (gameContext.detectCollisionsWithEnemies(getBoundingRectangle())) {
             lifeState = lifeState.DYING;

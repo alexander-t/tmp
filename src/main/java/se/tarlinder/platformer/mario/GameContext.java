@@ -1,13 +1,10 @@
 package se.tarlinder.platformer.mario;
 
-import se.tarlinder.platformer.engine.VerticalDirection;
 import se.tarlinder.platformer.engine.entity.Entity;
-import se.tarlinder.platformer.mario.entity.BlockBase;
+import se.tarlinder.platformer.engine.view.ViewPort;
 import se.tarlinder.platformer.mario.entity.Goomba;
 import se.tarlinder.platformer.mario.entity.Player;
-import se.tarlinder.platformer.engine.view.ViewPort;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,17 +21,6 @@ public class GameContext {
         player.setGameContext(this);
     }
 
-    public boolean detectCollisionsWithWorld(Rectangle rectangle, VerticalDirection verticalDirection) {
-        for (BlockBase block : level.getBlocks()) {
-            if (rectangle.intersects(block.getBoundingRectangle())) {
-                if (verticalDirection == VerticalDirection.UP) {
-                    block.bump();
-                }
-                return true;
-            }
-        }
-        return false;
-    }
 /*
     public boolean detectCollisionsWithEnemies(Rectangle rectangle) {
         for (Entity enemy : enemies) {

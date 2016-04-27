@@ -3,6 +3,8 @@ package se.tarlinder.platformer.engine.entity;
 import se.tarlinder.platformer.engine.Animation;
 import se.tarlinder.platformer.engine.HorizontalDirection;
 import se.tarlinder.platformer.engine.VerticalDirection;
+import se.tarlinder.platformer.engine.component.camera.CameraComponent;
+import se.tarlinder.platformer.engine.component.input.InputComponent;
 import se.tarlinder.platformer.mario.state.LifeState;
 
 import java.awt.*;
@@ -27,6 +29,9 @@ public abstract class MovingEntity extends Entity {
     public int frameInJump = 0;
     /////////////////////////////////////////////
 
+    protected InputComponent inputComponent;
+    protected CameraComponent cameraComponent;
+
     public MovingEntity(int x, int y, int width, int height,
                         float initialVelocity, HorizontalDirection initialHorizontalDirection, VerticalDirection initialVerticalDirection,
                         Animation walkRightAnimation, Animation walkLeftAnimation) {
@@ -39,6 +44,16 @@ public abstract class MovingEntity extends Entity {
         currentAnimation = horizontalDirection == HorizontalDirection.RIGHT
                 ? walkRightAnimation : walkLeftAnimation;
 
+    }
+
+    public MovingEntity withInputComponent(InputComponent inputComponent) {
+        this.inputComponent = inputComponent;
+        return this;
+    }
+
+    public MovingEntity withCameraComponent(CameraComponent cameraComponent) {
+        this.cameraComponent = cameraComponent;
+        return this;
     }
 
     public abstract Point[][] getCollisionPoints();

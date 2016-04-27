@@ -28,10 +28,8 @@ public class Goomba extends MovingEntity {
     };
 
     private GameContext gameContext;
-    private InputComponent inputComponent = new DumbWalkerInputComponent();
     private PhysicsComponent physicsComponent = new PhysicsComponent();
     private GraphicsComponent graphicsComponent = new GraphicsComponent();
-    private CameraComponent cameraComponent = new NullCameraComponent();
 
     private String currentImageId;
 
@@ -40,16 +38,8 @@ public class Goomba extends MovingEntity {
                 new Animation().add("goomba walk1", 15).add("goomba walk2", 15),
                 new Animation().add("goomba walk1", 15).add("goomba walk2", 15));
         this.gameContext = gameContext;
-    }
-
-    public Goomba withInputComponent(InputComponent inputComponent) {
-        this.inputComponent = inputComponent;
-        return this;
-    }
-
-    public Goomba withCameraComponent(CameraComponent cameraComponent) {
-        this.cameraComponent = cameraComponent;
-        return this;
+        inputComponent = new DumbWalkerInputComponent();
+        cameraComponent = new NullCameraComponent();
     }
 
     @Override
