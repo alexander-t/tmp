@@ -19,7 +19,7 @@ public class GameJavaFx extends Application {
     private static final int PLAYER_START_Y = 768 - BlockBase.BLOCK_SIZE - 23;
 
     public GameJavaFx() {
-        player = new Player(PLAYER_START_X, PLAYER_START_Y, null);
+        player = new Player(PLAYER_START_X, PLAYER_START_Y, null, null);
     }
 
     @Override

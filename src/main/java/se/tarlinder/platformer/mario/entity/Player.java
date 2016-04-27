@@ -4,7 +4,6 @@ import se.tarlinder.platformer.engine.Animation;
 import se.tarlinder.platformer.engine.HorizontalDirection;
 import se.tarlinder.platformer.engine.component.GraphicsComponent;
 import se.tarlinder.platformer.engine.component.PhysicsComponent;
-import se.tarlinder.platformer.engine.component.camera.CameraComponent;
 import se.tarlinder.platformer.engine.component.camera.ScrollViewPortCameraComponent;
 import se.tarlinder.platformer.engine.component.input.InputComponent;
 import se.tarlinder.platformer.engine.entity.MovingEntity;
@@ -36,7 +35,7 @@ public class Player extends MovingEntity {
 
     private String currentImageId;
 
-    public Player(int x, int y, InputComponent inputComponent) {
+    public Player(int x, int y, GameContext gameContext, InputComponent inputComponent) {
         super(x, y, SPRITE_WIDTH, SPRITE_HEIGHT, 0, HorizontalDirection.RIGHT, null,
                 new Animation()
                         .add("mario walk right1", 3)
@@ -49,15 +48,12 @@ public class Player extends MovingEntity {
                         .add("mario walk left3", 3)
                         .add("mario walk left4", 5));
 
+        this.gameContext = gameContext;
         this.inputComponent = inputComponent;
 
         cameraComponent = new ScrollViewPortCameraComponent();
         jumpRightimageId = IMAGE_ID_JUMP_RIGHT;
         jumpLeftImageId = IMAGE_ID_JUMP_LEFT;
-    }
-
-    public void setGameContext(GameContext gameContext) {
-        this.gameContext = gameContext;
     }
 
     @Override

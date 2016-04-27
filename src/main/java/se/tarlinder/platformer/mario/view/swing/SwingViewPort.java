@@ -33,7 +33,7 @@ public class SwingViewPort extends JFrame implements ViewPort {
                     g.drawImage(SpriteCache.get(block.getCurrentImageId()), (int) block.getX(), (int) block.getY(), null);
                 }
 
-                for (Entity enemy : gameContext.enemies) {
+                for (Entity enemy : gameContext.movingEntities) {
                     g.drawImage(SpriteCache.get(enemy.getCurrentImageId()), (int) enemy.getX(), (int) enemy.getY(), null);
                     if (enemy instanceof MovingEntity) {
                         g.setColor(Color.red);
@@ -46,7 +46,7 @@ public class SwingViewPort extends JFrame implements ViewPort {
                         }
                     }
                 }
-
+/*
                 Player player = gameContext.player;
                 g.drawImage(SpriteCache.get(player.getCurrentImageId()), (int) player.getX(), (int) player.getY(), null);
 
@@ -57,13 +57,12 @@ public class SwingViewPort extends JFrame implements ViewPort {
                                 player.getCollisionPoints()[cpy][cpx].x, player.getCollisionPoints()[cpy][cpx].y);
                     }
                 }
-
-
+*/
 
                 g.setColor(Color.lightGray);
                 g.fill3DRect(camX, camY, getWidth(), 16, true);
                 g.setColor(Color.black);
-                g.drawString(String.format("x=%d, y=%d", (int) player.getX(), (int) player.getY()), camX + 4, camY + 12);
+//                g.drawString(String.format("x=%d, y=%d", (int) player.getX(), (int) player.getY()), camX + 4, camY + 12);
             }
         };
         viewPort.setPreferredSize(new Dimension(BlockBase.BLOCK_SIZE * 32, BlockBase.BLOCK_SIZE * 22));

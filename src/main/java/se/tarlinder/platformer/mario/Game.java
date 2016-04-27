@@ -1,7 +1,5 @@
 package se.tarlinder.platformer.mario;
 
-import se.tarlinder.platformer.engine.component.camera.NullCameraComponent;
-import se.tarlinder.platformer.engine.component.camera.ScrollViewPortCameraComponent;
 import se.tarlinder.platformer.engine.component.input.InputComponent;
 import se.tarlinder.platformer.engine.component.input.KeyboardInputComponent;
 import se.tarlinder.platformer.engine.input.swing.KeyAdapterInputHandler;
@@ -18,18 +16,12 @@ import java.io.InputStreamReader;
 public class Game {
 
     public static final int MS_PER_FRAME = 16;
-
-    private final Player player;
-    private final Level level;
-    private final GameContext gameContext;
-
-    private final KeyAdapterInputHandler inputHandler;
-
     private static final int PLAYER_START_X = BlockBase.BLOCK_SIZE;
     private static final int PLAYER_START_Y = BlockBase.BLOCK_SIZE * 21 - 10;
 
-    public Game() {
+    private final Player player;
 
+    public Game() {
         SpriteCache.addSheet("enemies", "/smb_enemies_sheet.png");
         SpriteCache.addSheet("heroes", "/hero.png");
         SpriteCache.add("goomba walk1", "enemies", 0, 4, 16, 16);
@@ -46,16 +38,17 @@ public class Game {
         SpriteCache.addFlipped("mario jump left", "mario jump right");
         SpriteCache.add("mario dying", "heroes", 411, 7, 16, 24);
 
-        inputHandler = new KeyAdapterInputHandler();
-        InputComponent keyboardInputComponent = new KeyboardInputComponent(inputHandler);
-        player = new Player(PLAYER_START_X, PLAYER_START_Y, keyboardInputComponent);
-        level = new LevelBuilder(new SimpleTmxLoader(new InputStreamReader(this.getClass().getResourceAsStream("/levels/mario.tmx")))).buildLevel();
-        gameContext = new GameContext(player, level);
+        final KeyAdapterInputHandler inputHandler = new KeyAdapterInputHandler();
+        final InputComponent keyboardInputComponent = new KeyboardInputComponent(new KeyAdapterInputHandler());
+        final Level level = new LevelBuilder(new SimpleTmxLoader(new InputStreamReader(this.getClass().getResourceAsStream("/levels/mario.tmx")))).buildLevel();
 
-        gameContext.addEnemy(new Goomba(350, 511, gameContext));
+        final GameContext gameContext = new GameContext(level);
+        player = new Player(PLAYER_START_X, PLAYER_START_Y, gameContext, keyboardInputComponent);
+        gameContext.addEntity(player);
+        gameContext.addEntity(new Goomba(350, 511, gameContext));
 
         /*
-        gameContext.addEnemy(new Goomba(350, 511, gameContext)
+        gameContext.addEntity(new Goomba(350, 511, gameContext)
                 .withCameraComponent(new ScrollViewPortCameraComponent())
                 .withInputComponent(new KeyboardInputComponent(inputHandler)));
         */
@@ -65,7 +58,7 @@ public class Game {
         new Thread(() -> {
             while (true) {
                 long startTime = System.currentTimeMillis();
-                update();
+                gameContext.update();
                 viewPort.update();
 
                 if (player.getLifeState() == LifeState.DEAD) {
@@ -78,10 +71,6 @@ public class Game {
                 }
             }
         }).start();
-    }
-
-    private void update() {
-        gameContext.update();
     }
 
     public static void main(String... args) {

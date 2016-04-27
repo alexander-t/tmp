@@ -2,8 +2,6 @@ package se.tarlinder.platformer.mario;
 
 import se.tarlinder.platformer.engine.entity.Entity;
 import se.tarlinder.platformer.engine.view.ViewPort;
-import se.tarlinder.platformer.mario.entity.Goomba;
-import se.tarlinder.platformer.mario.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,34 +9,30 @@ import java.util.List;
 public class GameContext {
 
     private ViewPort viewPort;
-    public Player player;
     private Level level;
-    public List<Entity> enemies = new ArrayList<>();
+    public List<Entity> movingEntities = new ArrayList<>();
 
-    public GameContext(Player player, Level level) {
-        this.player = player;
+    public GameContext(Level level) {
         this.level = level;
-        player.setGameContext(this);
     }
 
-/*
-    public boolean detectCollisionsWithEnemies(Rectangle rectangle) {
-        for (Entity enemy : enemies) {
-            if (rectangle.intersects(enemy.getBoundingRectangle())) {
-                return true;
+    /*
+        public boolean detectCollisionsWithEnemies(Rectangle rectangle) {
+            for (Entity enemy : enemies) {
+                if (rectangle.intersects(enemy.getBoundingRectangle())) {
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
-    }
-*/
-    public void addEnemy(Goomba goomba) {
-        enemies.add(goomba);
+    */
+    public void addEntity(Entity entity) {
+        movingEntities.add(entity);
     }
 
     public void update() {
         level.getBlocks().stream().forEach(b -> b.update());
-        enemies.stream().forEach(e -> e.update());
-        player.update();
+        movingEntities.stream().forEach(e -> e.update());
     }
 
     public int getViewPortWidth() {
