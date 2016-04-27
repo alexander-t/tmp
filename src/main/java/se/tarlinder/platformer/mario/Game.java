@@ -1,5 +1,7 @@
 package se.tarlinder.platformer.mario;
 
+import se.tarlinder.platformer.engine.component.camera.NullCameraComponent;
+import se.tarlinder.platformer.engine.component.camera.ScrollViewPortCameraComponent;
 import se.tarlinder.platformer.engine.component.input.InputComponent;
 import se.tarlinder.platformer.engine.component.input.KeyboardInputComponent;
 import se.tarlinder.platformer.engine.input.swing.KeyAdapterInputHandler;
@@ -51,8 +53,12 @@ public class Game {
         gameContext = new GameContext(player, level);
 
         gameContext.addEnemy(new Goomba(350, 511, gameContext));
-        // gameContext.addEnemy(new Goomba(350, 511, gameContext).withInputComponent(new KeyboardInputComponent(inputHandler)));
 
+        /*
+        gameContext.addEnemy(new Goomba(350, 511, gameContext)
+                .withCameraComponent(new ScrollViewPortCameraComponent())
+                .withInputComponent(new KeyboardInputComponent(inputHandler)));
+        */
         final SwingViewPort viewPort = new SwingViewPort(gameContext);
         viewPort.addKeyListener(inputHandler);
 

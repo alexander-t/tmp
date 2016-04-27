@@ -5,6 +5,8 @@ import se.tarlinder.platformer.engine.HorizontalDirection;
 import se.tarlinder.platformer.engine.VerticalDirection;
 import se.tarlinder.platformer.engine.component.GraphicsComponent;
 import se.tarlinder.platformer.engine.component.PhysicsComponent;
+import se.tarlinder.platformer.engine.component.camera.CameraComponent;
+import se.tarlinder.platformer.engine.component.camera.NullCameraComponent;
 import se.tarlinder.platformer.engine.component.input.DumbWalkerInputComponent;
 import se.tarlinder.platformer.engine.component.input.InputComponent;
 import se.tarlinder.platformer.engine.entity.MovingEntity;
@@ -29,6 +31,7 @@ public class Goomba extends MovingEntity {
     private InputComponent inputComponent = new DumbWalkerInputComponent();
     private PhysicsComponent physicsComponent = new PhysicsComponent();
     private GraphicsComponent graphicsComponent = new GraphicsComponent();
+    private CameraComponent cameraComponent = new NullCameraComponent();
 
     private String currentImageId;
 
@@ -41,6 +44,11 @@ public class Goomba extends MovingEntity {
 
     public Goomba withInputComponent(InputComponent inputComponent) {
         this.inputComponent = inputComponent;
+        return this;
+    }
+
+    public Goomba withCameraComponent(CameraComponent cameraComponent) {
+        this.cameraComponent = cameraComponent;
         return this;
     }
 
@@ -64,5 +72,6 @@ public class Goomba extends MovingEntity {
         inputComponent.update(this);
         physicsComponent.update(this, gameContext.getLevel());
         currentImageId = graphicsComponent.update(this, false);
+        cameraComponent.update(this, gameContext);
     }
 }

@@ -4,6 +4,8 @@ import se.tarlinder.platformer.engine.Animation;
 import se.tarlinder.platformer.engine.HorizontalDirection;
 import se.tarlinder.platformer.engine.component.GraphicsComponent;
 import se.tarlinder.platformer.engine.component.PhysicsComponent;
+import se.tarlinder.platformer.engine.component.camera.CameraComponent;
+import se.tarlinder.platformer.engine.component.camera.ScrollViewPortCameraComponent;
 import se.tarlinder.platformer.engine.component.input.InputComponent;
 import se.tarlinder.platformer.engine.entity.MovingEntity;
 import se.tarlinder.platformer.mario.GameContext;
@@ -13,9 +15,10 @@ import java.awt.*;
 
 public class Player extends MovingEntity {
 
-    private final InputComponent inputComponent;
-    private final PhysicsComponent physicsComponent = new PhysicsComponent();
-    private final GraphicsComponent graphicsComponent = new GraphicsComponent();
+    private InputComponent inputComponent;
+    private PhysicsComponent physicsComponent = new PhysicsComponent();
+    private GraphicsComponent graphicsComponent = new GraphicsComponent();
+    private CameraComponent cameraComponent = new ScrollViewPortCameraComponent();
 
     private static final int SPRITE_WIDTH = 16;
     private static final int SPRITE_HEIGHT = 24;
@@ -53,6 +56,11 @@ public class Player extends MovingEntity {
         this.jumpLeftImageId = IMAGE_ID_JUMP_LEFT;
     }
 
+    public Player withCameraComponent(CameraComponent cameraComponent) {
+        this.cameraComponent = cameraComponent;
+        return this;
+    }
+
     public void setGameContext(GameContext gameContext) {
         this.gameContext = gameContext;
     }
@@ -81,22 +89,7 @@ public class Player extends MovingEntity {
 
         boolean hasChangedDirection = (oldVelocity * velocity < 0);
         currentImageId = graphicsComponent.update(this, hasChangedDirection);
-
-        final int viewPortWidth = gameContext.getViewPortWidth();
-        final int viewPortHeight = gameContext.getViewPortHeight();
-
-        // Move camera
-        if (x >= viewPortWidth / 2) {
-            if (x < gameContext.getLevel().widthInPixels() - viewPortWidth / 2) {
-                gameContext.getViewPort().setCamX((int) x - gameContext.getViewPort().getWidth() / 2);
-            }
-        }
-
-        if (y >= viewPortHeight / 2) {
-            if (y < gameContext.getLevel().heightInPixels() - viewPortHeight / 2) {
-                gameContext.getViewPort().setCamY((int) y - gameContext.getViewPort().getHeight() / 2);
-            }
-        }
+        cameraComponent.update(this, gameContext);
 /*
         if (lifeState == lifeState.DYING) {
             currentImageId = IMAGE_ID_DYING;
