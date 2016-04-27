@@ -39,7 +39,7 @@ public class Game {
         SpriteCache.add("mario dying", "heroes", 411, 7, 16, 24);
 
         final KeyAdapterInputHandler inputHandler = new KeyAdapterInputHandler();
-        final InputComponent keyboardInputComponent = new KeyboardInputComponent(new KeyAdapterInputHandler());
+        final InputComponent keyboardInputComponent = new KeyboardInputComponent(inputHandler);
         final Level level = new LevelBuilder(new SimpleTmxLoader(new InputStreamReader(this.getClass().getResourceAsStream("/levels/mario.tmx")))).buildLevel();
 
         final GameContext gameContext = new GameContext(level);
