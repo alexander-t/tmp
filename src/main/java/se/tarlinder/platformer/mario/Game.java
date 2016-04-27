@@ -49,8 +49,9 @@ public class Game {
         player = new Player(PLAYER_START_X, PLAYER_START_Y, keyboardInputComponent);
         level = new LevelBuilder(new SimpleTmxLoader(new InputStreamReader(this.getClass().getResourceAsStream("/levels/mario.tmx")))).buildLevel();
         gameContext = new GameContext(player, level);
-        //gameContext.addEnemy(new Goomba(680, 511, gameContext));
+
         gameContext.addEnemy(new Goomba(350, 511, gameContext));
+        // gameContext.addEnemy(new Goomba(350, 511, gameContext).withInputComponent(new KeyboardInputComponent(inputHandler)));
 
         final SwingViewPort viewPort = new SwingViewPort(gameContext);
         viewPort.addKeyListener(inputHandler);

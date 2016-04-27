@@ -2,6 +2,7 @@ package se.tarlinder.platformer.mario.entity;
 
 import se.tarlinder.platformer.engine.Animation;
 import se.tarlinder.platformer.engine.HorizontalDirection;
+import se.tarlinder.platformer.engine.component.GraphicsComponent;
 import se.tarlinder.platformer.engine.component.PhysicsComponent;
 import se.tarlinder.platformer.engine.component.input.InputComponent;
 import se.tarlinder.platformer.engine.entity.MovingEntity;
@@ -14,6 +15,7 @@ public class Player extends MovingEntity {
 
     private final InputComponent inputComponent;
     private final PhysicsComponent physicsComponent = new PhysicsComponent();
+    private final GraphicsComponent graphicsComponent = new GraphicsComponent();
 
     private static final int SPRITE_WIDTH = 16;
     private static final int SPRITE_HEIGHT = 24;
@@ -33,28 +35,24 @@ public class Player extends MovingEntity {
     private static final String IMAGE_ID_JUMP_LEFT = "mario jump left";
     private static final String IMAGE_ID_JUMP_RIGHT = "mario jump right";
 
-    private Animation walkRightAnimation;
-    private Animation walkLeftAnimation;
-    private Animation currentAnimation;
     private String currentImageId;
 
     public Player(int x, int y, InputComponent inputComponent) {
-        super(x, y, SPRITE_WIDTH, SPRITE_HEIGHT, 0, HorizontalDirection.RIGHT, null);
+        super(x, y, SPRITE_WIDTH, SPRITE_HEIGHT, 0, HorizontalDirection.RIGHT, null,
+                new Animation()
+                        .add("mario walk right1", 3)
+                        .add("mario walk right2", 5)
+                        .add("mario walk right3", 3)
+                        .add("mario walk right4", 5),
+                new Animation()
+                        .add("mario walk left1", 3)
+                        .add("mario walk left2", 5)
+                        .add("mario walk left3", 3)
+                        .add("mario walk left4", 5));
+
         this.inputComponent = inputComponent;
-
-        walkRightAnimation = new Animation()
-                .add("mario walk right1", 3)
-                .add("mario walk right2", 5)
-                .add("mario walk right3", 3)
-                .add("mario walk right4", 5);
-
-        walkLeftAnimation = new Animation()
-                .add("mario walk left1", 3)
-                .add("mario walk left2", 5)
-                .add("mario walk left3", 3)
-                .add("mario walk left4", 5);
-
-        currentAnimation = walkRightAnimation;
+        this.jumpRightimageId = IMAGE_ID_JUMP_RIGHT;
+        this.jumpLeftImageId = IMAGE_ID_JUMP_LEFT;
     }
 
     public void setGameContext(GameContext gameContext) {
@@ -96,28 +94,8 @@ public class Player extends MovingEntity {
         inputComponent.update(this);
         physicsComponent.update(this, gameContext.getLevel());
 
-        if (isJumping()) {
-            currentImageId = horizontalDirection == HorizontalDirection.RIGHT ? IMAGE_ID_JUMP_RIGHT : IMAGE_ID_JUMP_LEFT;
-        } else {
-            if (velocity > 0) {
-                currentAnimation = walkRightAnimation;
-                if (oldVelocity * velocity < 0) {
-                    currentAnimation.reset();
-                } else {
-                    currentAnimation.advance();
-                }
-            } else if (velocity < 0) {
-                currentAnimation = walkLeftAnimation;
-                if (oldVelocity * velocity < 0) {
-                    currentAnimation.reset();
-                } else {
-                    currentAnimation.advance();
-                }
-            } else {
-                currentAnimation.reset();
-            }
-            currentImageId = currentAnimation.getCurrentImageId();
-        }
+        boolean hasChangedDirection = (oldVelocity * velocity < 0);
+        currentImageId = graphicsComponent.update(this, hasChangedDirection);
 
         final int viewPortWidth = gameContext.getViewPortWidth();
         final int viewPortHeight = gameContext.getViewPortHeight();

@@ -1,5 +1,6 @@
 package se.tarlinder.platformer.engine.entity;
 
+import se.tarlinder.platformer.engine.Animation;
 import se.tarlinder.platformer.engine.HorizontalDirection;
 import se.tarlinder.platformer.engine.VerticalDirection;
 
@@ -11,17 +12,30 @@ public abstract class MovingEntity extends Entity {
     protected float velocity;
     protected float verticalVelocity;
 
+    protected Animation walkRightAnimation;
+    protected Animation walkLeftAnimation;
+    protected Animation currentAnimation;
+    protected String jumpLeftImageId;
+    protected String jumpRightimageId;
+
     ///////////////////////////////////////////
     protected boolean isJumping;
     public final int framesPerJump = 16;
     public int frameInJump = 0;
     /////////////////////////////////////////////
 
-    public MovingEntity(int x, int y, int width, int height, float initialVelocity, HorizontalDirection initialHorizontalDirection, VerticalDirection initialVerticalDirection) {
+    public MovingEntity(int x, int y, int width, int height,
+                        float initialVelocity, HorizontalDirection initialHorizontalDirection, VerticalDirection initialVerticalDirection,
+                        Animation walkRightAnimation, Animation walkLeftAnimation) {
         super(x, y, width, height);
         velocity = initialVelocity;
         horizontalDirection = initialHorizontalDirection;
         verticalDirection = initialVerticalDirection;
+        this.walkRightAnimation = walkRightAnimation;
+        this.walkLeftAnimation = walkLeftAnimation;
+        currentAnimation = horizontalDirection == HorizontalDirection.RIGHT
+                ? walkRightAnimation : walkLeftAnimation;
+
     }
 
     public abstract Point[][] getCollisionPoints();
@@ -52,6 +66,30 @@ public abstract class MovingEntity extends Entity {
 
     public float getVerticalVelocity() {
         return verticalVelocity;
+    }
+
+    public Animation getWalkRightAnimation() {
+        return walkRightAnimation;
+    }
+
+    public Animation getWalkLeftAnimation() {
+        return walkLeftAnimation;
+    }
+
+    public Animation getAnimation() {
+        return currentAnimation;
+    }
+
+    public void setAnimation(Animation animation) {
+        currentAnimation = animation;
+    }
+
+    public String getJumpLeftImageId() {
+        return jumpLeftImageId;
+    }
+
+    public String getJumpRightimageId() {
+        return jumpRightimageId;
     }
 
     public boolean isJumping() {

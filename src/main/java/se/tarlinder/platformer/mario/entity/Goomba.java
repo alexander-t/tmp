@@ -1,12 +1,13 @@
 package se.tarlinder.platformer.mario.entity;
 
-import se.tarlinder.platformer.engine.VerticalDirection;
-import se.tarlinder.platformer.engine.component.PhysicsComponent;
-import se.tarlinder.platformer.engine.component.input.DumbWalkerInputComponent;
-import se.tarlinder.platformer.engine.entity.MovingEntity;
 import se.tarlinder.platformer.engine.Animation;
 import se.tarlinder.platformer.engine.HorizontalDirection;
+import se.tarlinder.platformer.engine.VerticalDirection;
+import se.tarlinder.platformer.engine.component.GraphicsComponent;
+import se.tarlinder.platformer.engine.component.PhysicsComponent;
+import se.tarlinder.platformer.engine.component.input.DumbWalkerInputComponent;
 import se.tarlinder.platformer.engine.component.input.InputComponent;
+import se.tarlinder.platformer.engine.entity.MovingEntity;
 import se.tarlinder.platformer.mario.GameContext;
 
 import java.awt.*;
@@ -25,22 +26,27 @@ public class Goomba extends MovingEntity {
     };
 
     private GameContext gameContext;
-    private Animation animation;
     private InputComponent inputComponent = new DumbWalkerInputComponent();
     private PhysicsComponent physicsComponent = new PhysicsComponent();
+    private GraphicsComponent graphicsComponent = new GraphicsComponent();
+
+    private String currentImageId;
 
     public Goomba(int x, int y, GameContext gameContext) {
-        super(x, y, WIDTH, HEIGHT, WALK_ACCELERATION, HorizontalDirection.RIGHT, VerticalDirection.NONE);
+        super(x, y, WIDTH, HEIGHT, WALK_ACCELERATION, HorizontalDirection.RIGHT, VerticalDirection.NONE,
+                new Animation().add("goomba walk1", 15).add("goomba walk2", 15),
+                new Animation().add("goomba walk1", 15).add("goomba walk2", 15));
         this.gameContext = gameContext;
+    }
 
-        animation = new Animation()
-                .add("goomba walk1", 15)
-                .add("goomba walk2", 15);
+    public Goomba withInputComponent(InputComponent inputComponent) {
+        this.inputComponent = inputComponent;
+        return this;
     }
 
     @Override
     public String getCurrentImageId() {
-        return animation.getCurrentImageId();
+        return currentImageId;
     }
 
     public Point[][] getCollisionPoints() {
@@ -57,6 +63,6 @@ public class Goomba extends MovingEntity {
     public void update() {
         inputComponent.update(this);
         physicsComponent.update(this, gameContext.getLevel());
-        animation.advance();
+        currentImageId = graphicsComponent.update(this, false);
     }
 }
