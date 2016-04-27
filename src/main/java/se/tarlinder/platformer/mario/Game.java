@@ -1,5 +1,6 @@
 package se.tarlinder.platformer.mario;
 
+import se.tarlinder.platformer.engine.DebugFlags;
 import se.tarlinder.platformer.engine.component.input.InputComponent;
 import se.tarlinder.platformer.engine.component.input.KeyboardInputComponent;
 import se.tarlinder.platformer.engine.input.swing.KeyAdapterInputHandler;
@@ -47,17 +48,22 @@ public class Game {
         gameContext.addEntity(player);
         gameContext.addEntity(new Goomba(350, 511, gameContext));
 
-        /*
-        gameContext.addEntity(new Goomba(350, 511, gameContext)
+
+/*        gameContext.addEntity(new Goomba(370, 511, gameContext)
                 .withCameraComponent(new ScrollViewPortCameraComponent())
                 .withInputComponent(new KeyboardInputComponent(inputHandler)));
-        */
+*/
         final SwingViewPort viewPort = new SwingViewPort(gameContext);
         viewPort.addKeyListener(inputHandler);
 
         new Thread(() -> {
             while (true) {
                 long startTime = System.currentTimeMillis();
+
+                if (inputHandler.cPressed) {
+                    DebugFlags.showCollisionPoints = !DebugFlags.showCollisionPoints;
+                }
+
                 gameContext.update();
                 viewPort.update();
 

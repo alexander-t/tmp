@@ -1,6 +1,6 @@
 package se.tarlinder.platformer.mario;
 
-import se.tarlinder.platformer.engine.entity.Entity;
+import se.tarlinder.platformer.engine.entity.MovingEntity;
 import se.tarlinder.platformer.engine.view.ViewPort;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ public class GameContext {
 
     private ViewPort viewPort;
     private Level level;
-    public List<Entity> movingEntities = new ArrayList<>();
+    public List<MovingEntity> movingEntities = new ArrayList<>();
 
     public GameContext(Level level) {
         this.level = level;
@@ -26,7 +26,7 @@ public class GameContext {
             return false;
         }
     */
-    public void addEntity(Entity entity) {
+    public void addEntity(MovingEntity entity) {
         movingEntities.add(entity);
     }
 

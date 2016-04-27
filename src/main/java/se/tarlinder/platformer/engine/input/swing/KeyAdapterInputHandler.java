@@ -11,9 +11,14 @@ public class KeyAdapterInputHandler extends KeyAdapter {
     public boolean downArrowPressed;
     public boolean shiftPressed;
 
+    public boolean cPressed;
+
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
+            case KeyEvent.VK_C:
+                cPressed = true;
+                break;
             case KeyEvent.VK_RIGHT:
                 rightArrowPressed = true;
                 break;
@@ -35,6 +40,9 @@ public class KeyAdapterInputHandler extends KeyAdapter {
     @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
+            case KeyEvent.VK_C:
+                cPressed = false;
+                break;
             case KeyEvent.VK_RIGHT:
                 rightArrowPressed = false;
                 break;

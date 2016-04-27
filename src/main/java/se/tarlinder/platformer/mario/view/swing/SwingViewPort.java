@@ -1,7 +1,6 @@
 package se.tarlinder.platformer.mario.view.swing;
 
-import se.tarlinder.platformer.mario.entity.Player;
-import se.tarlinder.platformer.engine.entity.Entity;
+import se.tarlinder.platformer.engine.DebugFlags;
 import se.tarlinder.platformer.engine.entity.MovingEntity;
 import se.tarlinder.platformer.engine.sprite.swing.SpriteCache;
 import se.tarlinder.platformer.engine.view.ViewPort;
@@ -33,43 +32,36 @@ public class SwingViewPort extends JFrame implements ViewPort {
                     g.drawImage(SpriteCache.get(block.getCurrentImageId()), (int) block.getX(), (int) block.getY(), null);
                 }
 
-                for (Entity enemy : gameContext.movingEntities) {
-                    g.drawImage(SpriteCache.get(enemy.getCurrentImageId()), (int) enemy.getX(), (int) enemy.getY(), null);
-                    if (enemy instanceof MovingEntity) {
-                        g.setColor(Color.red);
-                        MovingEntity movingEntity = (MovingEntity) enemy;
-                        for (int cpy = 0; cpy < movingEntity.getCollisionPoints().length; cpy++) {
-                            for (int cpx = 0; cpx < movingEntity.getCollisionPoints()[0].length; cpx++) {
-                                g.drawLine(movingEntity.getCollisionPoints()[cpy][cpx].x, movingEntity.getCollisionPoints()[cpy][cpx].y,
-                                        movingEntity.getCollisionPoints()[cpy][cpx].x, movingEntity.getCollisionPoints()[cpy][cpx].y);
-                            }
-                        }
+                for (MovingEntity entity : gameContext.movingEntities) {
+                    g.drawImage(SpriteCache.get(entity.getCurrentImageId()), (int) entity.getX(), (int) entity.getY(), null);
+                    if (DebugFlags.showCollisionPoints) {
+                        drawCollisionPoints(entity, g);
                     }
                 }
-/*
-                Player player = gameContext.player;
-                g.drawImage(SpriteCache.get(player.getCurrentImageId()), (int) player.getX(), (int) player.getY(), null);
-
-                g.setColor(Color.red);
-                for (int cpy = 0; cpy < player.getCollisionPoints().length; cpy++) {
-                    for (int cpx = 0; cpx < player.getCollisionPoints()[0].length; cpx++) {
-                        g.drawLine(player.getCollisionPoints()[cpy][cpx].x, player.getCollisionPoints()[cpy][cpx].y,
-                                player.getCollisionPoints()[cpy][cpx].x, player.getCollisionPoints()[cpy][cpx].y);
-                    }
-                }
-*/
 
                 g.setColor(Color.lightGray);
                 g.fill3DRect(camX, camY, getWidth(), 16, true);
                 g.setColor(Color.black);
 //                g.drawString(String.format("x=%d, y=%d", (int) player.getX(), (int) player.getY()), camX + 4, camY + 12);
             }
+
+            private void drawCollisionPoints(MovingEntity entity, Graphics g) {
+                g.setColor(Color.red);
+                MovingEntity movingEntity = (MovingEntity) entity;
+                for (int cpy = 0; cpy < movingEntity.getCollisionPoints().length; cpy++) {
+                    for (int cpx = 0; cpx < movingEntity.getCollisionPoints()[0].length; cpx++) {
+                        g.drawLine(movingEntity.getCollisionPoints()[cpy][cpx].x, movingEntity.getCollisionPoints()[cpy][cpx].y,
+                                movingEntity.getCollisionPoints()[cpy][cpx].x, movingEntity.getCollisionPoints()[cpy][cpx].y);
+                    }
+                }
+
+            }
         };
         viewPort.setPreferredSize(new Dimension(BlockBase.BLOCK_SIZE * 32, BlockBase.BLOCK_SIZE * 22));
         backgroundImage = ImageUtils.loadImageResource("/sprites/realistic/sky.jpg");
         add(viewPort);
         pack();
-        setLocationRelativeTo( null );
+        setLocationRelativeTo(null);
         setVisible(true);
 
     }
