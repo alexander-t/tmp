@@ -2,6 +2,7 @@ package se.tarlinder.platformer.engine.component;
 
 import se.tarlinder.platformer.engine.Collision;
 import se.tarlinder.platformer.engine.HorizontalDirection;
+import se.tarlinder.platformer.engine.VerticalDirection;
 import se.tarlinder.platformer.engine.entity.MovingEntity;
 import se.tarlinder.platformer.mario.Level;
 import se.tarlinder.platformer.mario.entity.BlockBase;
@@ -39,23 +40,39 @@ public class PhysicsComponent {
             entity.setX(0);
         }
 
-        // Determine facing
+        // Determine movement direction
         if (entity.getVelocity() > 0) {
             entity.setHorizontalDirection(HorizontalDirection.RIGHT);
         } else if (entity.getVelocity() < 0) {
             entity.setHorizontalDirection(HorizontalDirection.LEFT);
         }
+        if (entity.getVerticalVelocity() > 0) {
+            entity.setVerticalDirection(VerticalDirection.DOWN);
+        } else if (entity.getVerticalVelocity() < 0) {
+            entity.setVerticalDirection(VerticalDirection.UP);
+        } else {
+            entity.setVerticalDirection(VerticalDirection.NONE);
+        }
 
-        Set<Collision> collisions = detectCollisionsWithWorld(entity, level);
+
+        Set<Collision> collisions = detectHorizontalCollisionsWithWorld(entity, level);
+        if (collisions.contains(Collision.RIGHT)) {
+            entity.setCollision(Collision.RIGHT);
+            entity.setX(entity.getX() - entity.getVelocity());
+        } else if (collisions.contains(Collision.LEFT)) {
+            entity.setCollision(Collision.LEFT);
+            entity.setX(entity.getX() - entity.getVelocity());
+        }
 
         // Remain/land on ground or start falling
-        if (collisions.contains(Collision.DOWN)) {
-            entity.setY(entity.getY() - entity.getVerticalVelocity());
-            entity.setVerticalVelocity(0);
-            entity.endJump();
-        } else if (collisions.contains(Collision.UP)) {
+        collisions = detectCollisionsWithWorld(entity, level);
+        if (collisions.contains(Collision.UP)) {
             entity.setY(entity.getY() - entity.getVerticalVelocity());
             entity.setVerticalVelocity(BASE_VERTICAL_VELOCITY);
+            entity.endJump();
+        } else if (collisions.contains(Collision.DOWN)) {
+            entity.setY(entity.getY() - entity.getVerticalVelocity());
+            entity.setVerticalVelocity(0);
             entity.endJump();
         } else {
             if (entity.getVerticalVelocity() == 0) {
@@ -63,15 +80,6 @@ public class PhysicsComponent {
             } else {
                 entity.setVerticalVelocity(fakeAcceleration(entity.getVerticalVelocity()));
             }
-        }
-
-        // Resolve collisions sidewise
-        if (collisions.contains(Collision.RIGHT)) {
-            entity.setHorizontalDirection(HorizontalDirection.LEFT);
-            entity.setX(entity.getX() - entity.getVelocity());
-        } else if (collisions.contains(Collision.LEFT)) {
-            entity.setHorizontalDirection(HorizontalDirection.RIGHT);
-            entity.setX(entity.getX() - entity.getVelocity());
         }
 
         if (entity.getY() > level.heightInPixels()) {
@@ -92,9 +100,22 @@ public class PhysicsComponent {
 
             if (isEitherPointInRectangle(entity.getCollisionPoints()[Collision.DOWN.ordinal()], block.getBoundingRectangle())) {
                 collisions.add(Collision.DOWN);
-            } else if (isEitherPointInRectangle(entity.getCollisionPoints()[Collision.UP.ordinal()], block.getBoundingRectangle())) {
+            } else if (isEitherPointInRectangle2(entity.getCollisionPoints()[Collision.UP.ordinal()], block.getBoundingRectangle())) {
                 collisions.add(Collision.UP);
                 block.bump();
+            }
+        }
+        return collisions;
+    }
+
+    public Set<Collision> detectHorizontalCollisionsWithWorld(MovingEntity entity, Level level) {
+        Set<Collision> collisions = new HashSet<>(2);
+
+        for (BlockBase block : level.getBlocks()) {
+            if (isEitherPointInRectangle(entity.getCollisionPoints()[Collision.RIGHT.ordinal()], block.getBoundingRectangle())) {
+                collisions.add(Collision.RIGHT);
+            } else if (isEitherPointInRectangle(entity.getCollisionPoints()[Collision.LEFT.ordinal()], block.getBoundingRectangle())) {
+                collisions.add(Collision.LEFT);
             }
         }
         return collisions;
@@ -106,6 +127,10 @@ public class PhysicsComponent {
     }
 
     private boolean isEitherPointInRectangle(Point[] points, Rectangle rectangle) {
+        return Arrays.stream(points).anyMatch(rectangle::contains);
+    }
+
+    private boolean isEitherPointInRectangle2(Point[] points, Rectangle rectangle) {
         return Arrays.stream(points).anyMatch(rectangle::contains);
     }
 }

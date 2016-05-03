@@ -2,6 +2,7 @@ package se.tarlinder.platformer.engine.component;
 
 import se.tarlinder.platformer.engine.Animation;
 import se.tarlinder.platformer.engine.HorizontalDirection;
+import se.tarlinder.platformer.engine.VerticalDirection;
 import se.tarlinder.platformer.engine.entity.MovingEntity;
 
 public class GraphicsComponent {
@@ -11,6 +12,9 @@ public class GraphicsComponent {
         Animation animation = entity.getAnimation();
 
         if (entity.isJumping()) {
+                //(entity.getVerticalDirection() == VerticalDirection.DOWN && entity.getVelocity() > 0)) {
+
+            // Jumping or falling...
             return getJumpingImageId(entity);
         } else {
             if (entity.getVelocity() > 0) {
@@ -37,7 +41,7 @@ public class GraphicsComponent {
 
     private String getJumpingImageId(MovingEntity entity) {
         String imageId = entity.getHorizontalDirection() == HorizontalDirection.RIGHT
-                ? entity.getJumpRightimageId() : entity.getJumpLeftImageId();
+                ? entity.getJumpRightImageId() : entity.getJumpLeftImageId();
         if (imageId == null) {
 
             // Non-jumping entities don't have jumping image ids. Don't make a big deal and use a walking image id

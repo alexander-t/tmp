@@ -4,6 +4,7 @@ import se.tarlinder.platformer.engine.Animation;
 import se.tarlinder.platformer.engine.HorizontalDirection;
 import se.tarlinder.platformer.engine.component.GraphicsComponent;
 import se.tarlinder.platformer.engine.component.PhysicsComponent;
+import se.tarlinder.platformer.engine.component.ai.NullAIComponent;
 import se.tarlinder.platformer.engine.component.camera.ScrollViewPortCameraComponent;
 import se.tarlinder.platformer.engine.component.input.InputComponent;
 import se.tarlinder.platformer.engine.entity.MovingEntity;
@@ -51,6 +52,7 @@ public class Player extends MovingEntity {
         this.gameContext = gameContext;
         this.inputComponent = inputComponent;
 
+        aiComponent = new NullAIComponent();
         cameraComponent = new ScrollViewPortCameraComponent();
         jumpRightimageId = IMAGE_ID_JUMP_RIGHT;
         jumpLeftImageId = IMAGE_ID_JUMP_LEFT;
@@ -76,6 +78,7 @@ public class Player extends MovingEntity {
         float oldVelocity = velocity;
 
         inputComponent.update(this);
+        aiComponent.update(this);
         physicsComponent.update(this, gameContext.getLevel());
 
         boolean hasChangedDirection = (oldVelocity * velocity < 0);

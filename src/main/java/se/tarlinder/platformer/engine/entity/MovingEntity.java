@@ -1,8 +1,10 @@
 package se.tarlinder.platformer.engine.entity;
 
 import se.tarlinder.platformer.engine.Animation;
+import se.tarlinder.platformer.engine.Collision;
 import se.tarlinder.platformer.engine.HorizontalDirection;
 import se.tarlinder.platformer.engine.VerticalDirection;
+import se.tarlinder.platformer.engine.component.ai.AIComponent;
 import se.tarlinder.platformer.engine.component.camera.CameraComponent;
 import se.tarlinder.platformer.engine.component.input.InputComponent;
 import se.tarlinder.platformer.mario.state.LifeState;
@@ -30,7 +32,10 @@ public abstract class MovingEntity extends Entity {
     /////////////////////////////////////////////
 
     protected InputComponent inputComponent;
+    protected AIComponent aiComponent;
     protected CameraComponent cameraComponent;
+
+    protected Collision collision = Collision.NONE;
 
     public MovingEntity(int x, int y, int width, int height,
                         float initialVelocity, HorizontalDirection initialHorizontalDirection, VerticalDirection initialVerticalDirection,
@@ -56,6 +61,11 @@ public abstract class MovingEntity extends Entity {
         return this;
     }
 
+    public MovingEntity withAIComponent(AIComponent aiComponent) {
+        this.aiComponent = aiComponent;
+        return this;
+    }
+
     public abstract Point[][] getCollisionPoints();
 
     public HorizontalDirection getHorizontalDirection() {
@@ -68,6 +78,10 @@ public abstract class MovingEntity extends Entity {
 
     public VerticalDirection getVerticalDirection() {
         return verticalDirection;
+    }
+
+    public void setVerticalDirection(VerticalDirection verticalDirection) {
+        this.verticalDirection = verticalDirection;
     }
 
     public void setVelocity(float velocity) {
@@ -106,7 +120,7 @@ public abstract class MovingEntity extends Entity {
         return jumpLeftImageId;
     }
 
-    public String getJumpRightimageId() {
+    public String getJumpRightImageId() {
         return jumpRightimageId;
     }
 
@@ -131,5 +145,13 @@ public abstract class MovingEntity extends Entity {
 
     public LifeState getLifeState() {
         return lifeState;
+    }
+
+    public void setCollision(Collision collision) {
+        this.collision = collision;
+    }
+
+    public Collision getCollision() {
+        return collision;
     }
 }

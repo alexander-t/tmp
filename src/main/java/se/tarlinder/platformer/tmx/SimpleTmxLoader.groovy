@@ -45,15 +45,15 @@ class SimpleTmxLoader {
     }
 
     int[][] getLevel() {
-        mapData;
+        mapData
     }
 
     int getMapHeight() {
-        mapHeight;
+        mapHeight
     }
 
     int getMapWidth() {
-        mapWidth;
+        mapWidth
     }
 
     Map<Integer, TmxTile> getTiles() {

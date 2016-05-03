@@ -1,8 +1,9 @@
 package se.tarlinder.platformer.mario
 
-import se.tarlinder.platformer.NullInputComponent
+import se.tarlinder.platformer.engine.component.input.NullInputComponent
 import se.tarlinder.platformer.NullViewPort
 import se.tarlinder.platformer.StringLevelBuilder
+import se.tarlinder.platformer.engine.component.input.RandomizedInputComponent
 import se.tarlinder.platformer.engine.sprite.swing.SpriteCache
 import se.tarlinder.platformer.mario.entity.BlockBase
 import se.tarlinder.platformer.mario.entity.Player
@@ -14,9 +15,9 @@ import static se.tarlinder.platformer.util.Slomo.slomo
 class MovementTest extends Specification {
 
     def setupSpec() {
+        SpriteCacheDirector.loadAllSprites();
         SpriteCache.addImage("I", "/sprites/smb1/block1_24x24.png");
-        SpriteCache.addSheet("heroes", "/hero.png");
-        SpriteCache.add("mario walk right1", "heroes", 13, 7, 16, 24);
+        SpriteCache.addImage("B", "/sprites/smb1/block2_24x24.png");
     }
 
     def "A player standing still on a block won't move anywhere"() {
@@ -25,13 +26,14 @@ class MovementTest extends Specification {
                 "   ",
                 "   ",
                 "III"].toArray())
+        def gameContext = new GameContext(level)
 
         and: "The player standing on top of it"
         final int startX = BlockBase.BLOCK_SIZE;
         final int startY = BlockBase.BLOCK_SIZE + 1; // Add +1 to y because of sprite's collision points
-        def player = new Player(startX, startY, new NullInputComponent())
+        def player = new Player(startX, startY, gameContext, new NullInputComponent())
+        gameContext.addEntity(player)
 
-        def gameContext = new GameContext(player, level)
         def viewPort = new NullViewPort()
         gameContext.setViewPort(viewPort)
 
@@ -49,13 +51,14 @@ class MovementTest extends Specification {
                 "   ",
                 "   ",
                 "III"].toArray())
+        def gameContext = new GameContext(level)
 
         and: "The player standing on top of it"
         final int startX = BlockBase.BLOCK_SIZE;
         final int startY = BlockBase.BLOCK_SIZE + 1; // Add +1 to y because of sprite's collision points
-        def player = new Player(startX, startY, new NullInputComponent())
+        def player = new Player(startX, startY, gameContext, new NullInputComponent())
+        gameContext.addEntity(player)
 
-        def gameContext = new GameContext(player, level)
         def viewPort = new SwingViewPort(gameContext)
         gameContext.setViewPort(viewPort)
 
@@ -65,5 +68,35 @@ class MovementTest extends Specification {
         then: "The player hasn't moved"
         player.getX() == startX
         player.getY() == startY
+    }
+
+    def "dsA player standing still on a block won't move anywhere with visual aids"() {
+        given: "A simple level with some ground"
+        def level = new StringLevelBuilder().buildLevel((String[]) [
+                "        ",
+                "I      I",
+                "I  B   I",
+                "I      I ",
+                "I   BB I ",
+                "I B    I",
+                "I    III",
+                "IIIIIIII"].toArray())
+        def gameContext = new GameContext(level)
+
+        and: "The player standing on top of it"
+        final int startX = BlockBase.BLOCK_SIZE;
+        final int startY = BlockBase.BLOCK_SIZE * 2 + 1; // Add +1 to y because of sprite's collision points
+        def player = new Player(startX, startY, gameContext, new RandomizedInputComponent())
+        gameContext.addEntity(player)
+
+        def viewPort = new SwingViewPort(gameContext)
+        gameContext.setViewPort(viewPort)
+
+        when: "Time is advanced"
+        10000.times { slomo {player.update(); viewPort.update();} }
+
+        then:
+        player.getY() > 0
+        player.getX() < 9 * BlockBase.BLOCK_SIZE
     }
 }

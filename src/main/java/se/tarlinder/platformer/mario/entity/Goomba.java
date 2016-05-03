@@ -5,10 +5,9 @@ import se.tarlinder.platformer.engine.HorizontalDirection;
 import se.tarlinder.platformer.engine.VerticalDirection;
 import se.tarlinder.platformer.engine.component.GraphicsComponent;
 import se.tarlinder.platformer.engine.component.PhysicsComponent;
-import se.tarlinder.platformer.engine.component.camera.CameraComponent;
+import se.tarlinder.platformer.engine.component.ai.HorizontalBouncerAIComponent;
 import se.tarlinder.platformer.engine.component.camera.NullCameraComponent;
 import se.tarlinder.platformer.engine.component.input.DumbWalkerInputComponent;
-import se.tarlinder.platformer.engine.component.input.InputComponent;
 import se.tarlinder.platformer.engine.entity.MovingEntity;
 import se.tarlinder.platformer.mario.GameContext;
 
@@ -16,10 +15,10 @@ import java.awt.*;
 
 public class Goomba extends MovingEntity {
 
-    public static final float WALK_ACCELERATION = 0.7f;
-
     private static final int WIDTH = 16;
     private static final int HEIGHT = 16;
+    private static final float WALK_ACCELERATION = 0.7f;
+
     private static Point[][] COLLISION_POINTS = new Point[][]{
             {new Point(3, 0), new Point(WIDTH - 3, 0)},
             {new Point(WIDTH, 2), new Point(WIDTH, HEIGHT - 2)},
@@ -38,7 +37,8 @@ public class Goomba extends MovingEntity {
                 new Animation().add("goomba walk1", 15).add("goomba walk2", 15),
                 new Animation().add("goomba walk1", 15).add("goomba walk2", 15));
         this.gameContext = gameContext;
-        inputComponent = new DumbWalkerInputComponent();
+        inputComponent = new DumbWalkerInputComponent(WALK_ACCELERATION);
+        aiComponent = new HorizontalBouncerAIComponent();
         cameraComponent = new NullCameraComponent();
     }
 
@@ -60,6 +60,7 @@ public class Goomba extends MovingEntity {
     @Override
     public void update() {
         inputComponent.update(this);
+        aiComponent.update(this);
         physicsComponent.update(this, gameContext.getLevel());
         currentImageId = graphicsComponent.update(this, false);
         cameraComponent.update(this, gameContext);

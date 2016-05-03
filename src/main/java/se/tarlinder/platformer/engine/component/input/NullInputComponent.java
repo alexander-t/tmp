@@ -1,4 +1,4 @@
-package se.tarlinder.platformer;
+package se.tarlinder.platformer.engine.component.input;
 
 import se.tarlinder.platformer.engine.component.input.InputComponent;
 import se.tarlinder.platformer.engine.entity.MovingEntity;

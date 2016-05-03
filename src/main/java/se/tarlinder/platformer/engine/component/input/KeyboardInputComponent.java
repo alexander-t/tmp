@@ -20,7 +20,7 @@ public class KeyboardInputComponent implements InputComponent {
 
         // Sprint
         if (inputHandler.shiftPressed) {
-            walkAcceleration *=2;
+            walkAcceleration *= 2;
         }
 
         if (inputHandler.rightArrowPressed) {
@@ -31,8 +31,8 @@ public class KeyboardInputComponent implements InputComponent {
         }
 
         if (inputHandler.upArrowPressed && allowJump) {
-                allowJump = false;
-                movingEntity.startJump();
+            allowJump = false;
+            movingEntity.startJump();
         } else if (!inputHandler.upArrowPressed) {
             allowJump = true;
         }
