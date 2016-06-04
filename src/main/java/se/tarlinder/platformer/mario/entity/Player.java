@@ -2,6 +2,7 @@ package se.tarlinder.platformer.mario.entity;
 
 import se.tarlinder.platformer.engine.Animation;
 import se.tarlinder.platformer.engine.HorizontalDirection;
+import se.tarlinder.platformer.engine.component.DeathComponent;
 import se.tarlinder.platformer.engine.component.GraphicsComponent;
 import se.tarlinder.platformer.engine.component.PhysicsComponent;
 import se.tarlinder.platformer.engine.component.ai.NullAIComponent;
@@ -17,6 +18,7 @@ public class Player extends MovingEntity {
 
     private PhysicsComponent physicsComponent = new PhysicsComponent();
     private GraphicsComponent graphicsComponent = new GraphicsComponent();
+    private DeathComponent deathComponent = new DeathComponent();
 
     private static final int SPRITE_WIDTH = 16;
     private static final int SPRITE_HEIGHT = 24;
@@ -80,6 +82,7 @@ public class Player extends MovingEntity {
         inputComponent.update(this);
         aiComponent.update(this);
         physicsComponent.update(this, gameContext.getLevel());
+        deathComponent.update(this);
 
         boolean hasChangedDirection = (oldVelocity * velocity < 0);
         currentImageId = graphicsComponent.update(this, hasChangedDirection);
